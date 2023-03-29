@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="qm">
+
+    <!-- qudraputed -->
+    <xacro:arg name="robot_type" default="aliengo"/>
+    <xacro:include filename="$(find qm_description)/urdf/qudraputed/robot.xacro" />
+
+    <!-- manipulatior -->
+    <xacro:include filename="$(find qm_description)/urdf/manipulator/j2n6s300fix.xacro"/>
+
+    <link name="arm_base_link" />
+
+    <joint name="manipulator_joint" type="fixed">
+        <parent link= "base" />
+        <child link = "arm_base_link" />
+        <origin xyz="0.0 0.0 0.01" rpy="0.0 0.0 0.0" /> 
+    </joint>
+
+    <xacro:j2n6s300  base_parent="arm_base_link"/>
+
+    <!-- ros_control plugin -->
+    <gazebo>
+        <plugin name="gazebo_ros_control" filename="libqm_hw_sim.so">
+            <robotNamespace>/</robotNamespace>
+            <robotParam>qm_description</robotParam>
+            <robotSimType>qm_gazebo/QMHWSim</robotSimType>
+        </plugin>
+    </gazebo>
+    
+
+</robot>

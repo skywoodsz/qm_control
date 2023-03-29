@@ -1,0 +1,464 @@
+Panels:
+  - Class: rviz/Displays
+    Help Height: 138
+    Name: Displays
+    Property Tree Widget:
+      Expanded:
+        - /TF1/Frames1
+        - /Optimized State Trajectory1
+        - /Optimized State Trajectory1/Status1
+        - /Optimized State Trajectory1/Namespaces1
+        - /Target Trajectories1
+        - /Target Trajectories1/Target Feet Trajectories1
+        - /Target Trajectories1/Target Base Trajectory1
+      Splitter Ratio: 0.5
+    Tree Height: 303
+  - Class: rviz/Selection
+    Name: Selection
+  - Class: rviz/Tool Properties
+    Expanded:
+      - /2D Pose Estimate1
+      - /2D Nav Goal1
+      - /Publish Point1
+    Name: Tool Properties
+    Splitter Ratio: 0.5886790156364441
+  - Class: rviz/Views
+    Expanded:
+      - /Current View1
+    Name: Views
+    Splitter Ratio: 0.5
+  - Class: rviz/Time
+    Name: Time
+    SyncMode: 0
+    SyncSource: ""
+  - Class: rviz/Displays
+    Help Height: 138
+    Name: Displays
+    Property Tree Widget:
+      Expanded: ~
+      Splitter Ratio: 0.8294117450714111
+    Tree Height: 303
+Preferences:
+  PromptSaveOnExit: true
+Toolbars:
+  toolButtonStyle: 2
+Visualization Manager:
+  Class: ""
+  Displays:
+    - Alpha: 0.5
+      Cell Size: 1
+      Class: rviz/Grid
+      Color: 160; 160; 164
+      Enabled: true
+      Line Style:
+        Line Width: 0.029999999329447746
+        Value: Lines
+      Name: Grid
+      Normal Cell Count: 0
+      Offset:
+        X: 0
+        Y: 0
+        Z: 0
+      Plane: XY
+      Plane Cell Count: 10
+      Reference Frame: world
+      Value: true
+    - Alpha: 0.4000000059604645
+      Class: rviz/RobotModel
+      Collision Enabled: false
+      Enabled: true
+      Links:
+        All Links Enabled: true
+        Expand Joint Details: false
+        Expand Link Details: false
+        Expand Tree: false
+        LF_FOOT:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        LF_calf:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        LF_hip:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        LF_thigh:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        LH_FOOT:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        LH_calf:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        LH_hip:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        LH_thigh:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        Link Tree Style: Links in Alphabetic Order
+        RF_FOOT:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        RF_calf:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        RF_hip:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        RF_thigh:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        RH_FOOT:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        RH_calf:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        RH_hip:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        RH_thigh:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        arm_base_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        base:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        j2n6s300_end_effector:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        j2n6s300_link_1:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        j2n6s300_link_2:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        j2n6s300_link_3:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        j2n6s300_link_4:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        j2n6s300_link_5:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        j2n6s300_link_6:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        j2n6s300_link_base:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        unitree_imu:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+      Name: RobotModel
+      Robot Description: qm_description
+      TF Prefix: ""
+      Update Interval: 0
+      Value: true
+      Visual Enabled: true
+    - Class: rviz/TF
+      Enabled: true
+      Frame Timeout: 15
+      Frames:
+        All Enabled: false
+        LF_FOOT:
+          Value: true
+        LF_calf:
+          Value: true
+        LF_hip:
+          Value: true
+        LF_thigh:
+          Value: true
+        LH_FOOT:
+          Value: true
+        LH_calf:
+          Value: true
+        LH_hip:
+          Value: true
+        LH_thigh:
+          Value: true
+        RF_FOOT:
+          Value: true
+        RF_calf:
+          Value: true
+        RF_hip:
+          Value: true
+        RF_thigh:
+          Value: true
+        RH_FOOT:
+          Value: true
+        RH_calf:
+          Value: true
+        RH_hip:
+          Value: true
+        RH_thigh:
+          Value: true
+        arm_base_link:
+          Value: true
+        base:
+          Value: false
+        command:
+          Value: true
+        j2n6s300_end_effector:
+          Value: true
+        j2n6s300_link_1:
+          Value: true
+        j2n6s300_link_2:
+          Value: true
+        j2n6s300_link_3:
+          Value: true
+        j2n6s300_link_4:
+          Value: true
+        j2n6s300_link_5:
+          Value: true
+        j2n6s300_link_6:
+          Value: true
+        j2n6s300_link_base:
+          Value: true
+        unitree_imu:
+          Value: true
+        world:
+          Value: true
+      Marker Alpha: 1
+      Marker Scale: 1
+      Name: TF
+      Show Arrows: true
+      Show Axes: false
+      Show Names: false
+      Tree:
+        world:
+          base:
+            LF_hip:
+              LF_thigh:
+                LF_calf:
+                  LF_FOOT:
+                    {}
+            LH_hip:
+              LH_thigh:
+                LH_calf:
+                  LH_FOOT:
+                    {}
+            RF_hip:
+              RF_thigh:
+                RF_calf:
+                  RF_FOOT:
+                    {}
+            RH_hip:
+              RH_thigh:
+                RH_calf:
+                  RH_FOOT:
+                    {}
+            arm_base_link:
+              j2n6s300_link_base:
+                j2n6s300_link_1:
+                  j2n6s300_link_2:
+                    j2n6s300_link_3:
+                      j2n6s300_link_4:
+                        j2n6s300_link_5:
+                          j2n6s300_link_6:
+                            j2n6s300_end_effector:
+                              {}
+            unitree_imu:
+              {}
+          command:
+            {}
+      Update Interval: 0
+      Value: true
+    - Class: rviz/MarkerArray
+      Enabled: true
+      Marker Topic: /qm/optimizedStateTrajectory
+      Name: Optimized State Trajectory
+      Namespaces:
+        CoM Trajectory: true
+        EE Trajectory: true
+        Feet Trajectories: true
+      Queue Size: 100
+      Value: true
+    - Class: rviz/MarkerArray
+      Enabled: true
+      Marker Topic: /qm/currentState
+      Name: Current State
+      Namespaces:
+        Center of Pressure: true
+        EE Forces: true
+        EE Positions: true
+        Support Polygon: true
+      Queue Size: 100
+      Value: true
+    - Class: rviz/Group
+      Displays:
+        - Class: rviz/Group
+          Displays:
+            - Class: rviz/Marker
+              Enabled: true
+              Marker Topic: /qm/desiredFeetTrajectory/LF
+              Name: Marker
+              Namespaces:
+                {}
+              Queue Size: 100
+              Value: true
+            - Class: rviz/Marker
+              Enabled: true
+              Marker Topic: /qm/desiredFeetTrajectory/LH
+              Name: Marker
+              Namespaces:
+                {}
+              Queue Size: 100
+              Value: true
+            - Class: rviz/Marker
+              Enabled: true
+              Marker Topic: /qm/desiredFeetTrajectory/RF
+              Name: Marker
+              Namespaces:
+                {}
+              Queue Size: 100
+              Value: true
+            - Class: rviz/Marker
+              Enabled: true
+              Marker Topic: /qm/desiredFeetTrajectory/RH
+              Name: Marker
+              Namespaces:
+                {}
+              Queue Size: 100
+              Value: true
+          Enabled: true
+          Name: Target Feet Trajectories
+        - Class: rviz/Marker
+          Enabled: true
+          Marker Topic: /qm/desiredBaseTrajectory
+          Name: Target Base Trajectory
+          Namespaces:
+            {}
+          Queue Size: 100
+          Value: true
+      Enabled: true
+      Name: Target Trajectories
+    - Class: rviz/InteractiveMarkers
+      Enable Transparency: true
+      Enabled: true
+      Name: InteractiveMarkers
+      Show Axes: false
+      Show Descriptions: true
+      Show Visual Aids: false
+      Update Topic: /simple_marker/update
+      Value: true
+  Enabled: true
+  Global Options:
+    Background Color: 238; 238; 238
+    Default Light: true
+    Fixed Frame: world
+    Frame Rate: 30
+  Name: root
+  Tools:
+    - Class: rviz/Interact
+      Hide Inactive Objects: true
+    - Class: rviz/Select
+    - Class: rviz/Measure
+    - Class: rviz/SetInitialPose
+      Theta std deviation: 0.2617993950843811
+      Topic: /initialpose
+      X std deviation: 0.5
+      Y std deviation: 0.5
+    - Class: rviz/SetGoal
+      Topic: /move_base_simple/goal
+    - Class: rviz/PublishPoint
+      Single click: true
+      Topic: /clicked_point
+  Value: true
+  Views:
+    Current:
+      Class: rviz/Orbit
+      Distance: 4.857444763183594
+      Enable Stereo Rendering:
+        Stereo Eye Separation: 0.05999999865889549
+        Stereo Focal Distance: 1
+        Swap Stereo Eyes: false
+        Value: false
+      Field of View: 0.7853981852531433
+      Focal Point:
+        X: 0.19763794541358948
+        Y: 0.5138558745384216
+        Z: 0.5093013048171997
+      Focal Shape Fixed Size: true
+      Focal Shape Size: 0.05000000074505806
+      Invert Z Axis: false
+      Name: Current View
+      Near Clip Distance: 0.009999999776482582
+      Pitch: 0.5103983283042908
+      Target Frame: <Fixed Frame>
+      Yaw: 5.1817851066589355
+    Saved: ~
+Window Geometry:
+  Displays:
+    collapsed: false
+  Height: 1883
+  Hide Left Dock: true
+  Hide Right Dock: false
+  QMainWindow State: 000000ff00000000fd0000000400000000000001b300000701fc020000000afb0000001200530065006c0065006300740069006f006e000000006e000000b00000005c00fffffffb0000001e0054006f006f006c002000500072006f0070006500720074006900650073000000006e000004770000005c00fffffffb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c006100790073000000003d00000701000000c900fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261fb0000000c00430061006d00650072006101000001be000001900000000000000000fb000000100044006900730070006c006100790073000000006e00000247000000c900ffffff000000010000010f000002e2fc0200000003fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a005600690065007700730000000028000002e2000000a400fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000490000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e10000019700000003000006400000003efc0100000002fb0000000800540069006d0065000000000000000640000003bc00fffffffb0000000800540069006d00650100000000000004500000000000000000000004380000070100000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  Selection:
+    collapsed: false
+  Time:
+    collapsed: false
+  Tool Properties:
+    collapsed: false
+  Views:
+    collapsed: false
+  Width: 1080
+  X: 0
+  Y: 0
