@@ -91,3 +91,4 @@ This project is still in the early stages of development and we welcome feedback
 ## TODO
 
 - [ ] Solve the singularity problem.
+- [ ] Add the foot trajectory plannning.
