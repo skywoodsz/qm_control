@@ -84,6 +84,10 @@ mon launch qm_controllers load_controller_mpc.launch
 
 
 
-## Bugs & Feature Requests
+## Bugs & Feature Requesityts
 
 This project is still in the early stages of development and we welcome feedback.  Please report bugs and request features using the [Issue Tracker](https://github.com/skywoodsz/qm_control/issues) or Email skywoodszcn@gmail.com
+
+## TODO
+
+- [ ] Solve the singularity problem.
