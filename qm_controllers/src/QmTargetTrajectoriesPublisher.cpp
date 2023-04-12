@@ -19,7 +19,13 @@ visualization_msgs::InteractiveMarker QmTargetTrajectoriesInteractiveMarker::cre
     interactiveMarker.name = "Goal";
     interactiveMarker.scale = 0.2;
     interactiveMarker.description = "Right click to send command";
-    interactiveMarker.pose.position.z = 1.0;
+    interactiveMarker.pose.position.x = 0.52;
+    interactiveMarker.pose.position.y = 0.09;
+    interactiveMarker.pose.position.z = 0.436;
+    interactiveMarker.pose.orientation.x = 0.5;
+    interactiveMarker.pose.orientation.y = -0.5;
+    interactiveMarker.pose.orientation.z = 0.5;
+    interactiveMarker.pose.orientation.w = -0.5;
 
     // create a grey box marker
     const auto boxMarker = []() {
