@@ -53,8 +53,8 @@ link_directories(
 )
 
 add_library(${PROJECT_NAME}
-        src/WbcBase.cpp
         src/HoQp.cpp
+        src/WbcBase.cpp
         src/HierarchicalWbc.cpp
         )
 add_dependencies(${PROJECT_NAME}
@@ -68,6 +68,20 @@ target_link_libraries(${PROJECT_NAME}
         )
 
 target_compile_options(${PROJECT_NAME} PUBLIC ${OCS2_CXX_FLAGS})
+
+
+add_executable(angle_test
+        test/angle_test.cpp
+        )
+add_dependencies(angle_test
+        ${PROJECT_NAME}
+        ${catkin_EXPORTED_TARGETS}
+        )
+target_link_libraries(angle_test
+        ${PROJECT_NAME}
+        ${catkin_LIBRARIES}
+        )
+target_compile_options(angle_test PRIVATE ${OCS2_CXX_FLAGS})
 #########################
 ###   CLANG TOOLING   ###
 #########################

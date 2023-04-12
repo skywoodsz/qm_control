@@ -1,7 +1,7 @@
 //
 // Created by skywoodsz on 2023/3/12.
 //
-// copy from: https://github.com/qiayuanliao/legged_control
+// copy from:
 
 #ifndef SRC_TASK_H
 #define SRC_TASK_H

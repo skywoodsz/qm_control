@@ -1,7 +1,7 @@
 //
 // Created by skywoodsz on 2023/3/13.
 //
-// copy from: https://github.com/qiayuanliao/legged_control
+// copy from:
 
 #ifndef SRC_HOQP_H
 #define SRC_HOQP_H
