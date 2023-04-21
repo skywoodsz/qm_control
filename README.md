@@ -18,3 +18,4 @@ mon launch qm_wbc_controller load_wbc_controller.launch
 
 - \leg_states: foot position, velocity and contact states.
 - \odom: base odometry
+- \joint_states: manipulator joints position, velocity
