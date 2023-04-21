@@ -24,6 +24,8 @@ FromTopicStateEstimate::FromTopicStateEstimate(PinocchioInterface pinocchioInter
     ros::NodeHandle nh;
     state_pub_ =
             std::make_shared<realtime_tools::RealtimePublisher<qm_msgs::LegsState>>(nh, "/leg_states", 100);
+    joint_pub_ =
+            std::make_shared<realtime_tools::RealtimePublisher<sensor_msgs::JointState>>(nh, "/joint_states", 100);
 
     sub_ = nh.subscribe<nav_msgs::Odometry>("/ground_truth/state", 10, &FromTopicStateEstimate::callback, this);
 }
@@ -85,6 +87,22 @@ void FromTopicStateEstimate::publishLegState(const ros::Time& time, const ros::D
             }
             state_pub_->unlockAndPublish();
         }
+        if(joint_pub_->trylock())
+        {
+            joint_pub_->msg_.header.stamp = time;
+            joint_pub_->msg_.position.resize(6);
+            joint_pub_->msg_.velocity.resize(6);
+            joint_pub_->msg_.effort.resize(6);
+            joint_pub_->msg_.name.resize(6);
+            vector_t arm_joint_pos = qPino.tail(6);
+            vector_t arm_joint_vel = vPino.tail(6);
+            for (int joint = 0; joint < 6; ++joint) {
+                joint_pub_->msg_.position[joint] = arm_joint_pos(joint);
+                joint_pub_->msg_.velocity[joint] = arm_joint_vel(joint);
+                joint_pub_->msg_.effort[joint] = 0.;
+            }
+        }
+        joint_pub_->unlockAndPublish();
     }
 }
 

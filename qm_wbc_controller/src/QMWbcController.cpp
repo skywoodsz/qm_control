@@ -18,6 +18,7 @@
 #include <ocs2_ros_interfaces/common/RosMsgConversions.h>
 #include <ocs2_centroidal_model/AccessHelperFunctions.h>
 #include <ocs2_centroidal_model/ModelHelperFunctions.h>
+#include <ocs2_legged_robot/common/utils.h>
 
 #include <pluginlib/class_list_macros.hpp>
 
@@ -125,6 +126,9 @@ void QMWbcController::update(const ros::Time &time, const ros::Duration &period)
 
     // optimal
     size_t plannedMode = 15; // stance
+    const auto contactFlags = modeNumber2StanceLeg(plannedMode);
+    const vector_t uNominal = weightCompensatingInput(qmInterface_->getCentroidalModelInfo(), contactFlags);
+
     vector_t optimizedInput(qmInterface_->getCentroidalModelInfo().inputDim);
     vector_t optimizedState(qmInterface_->getCentroidalModelInfo().stateDim);
     optimizedInput.setZero();
@@ -133,13 +137,8 @@ void QMWbcController::update(const ros::Time &time, const ros::Duration &period)
     vector_t initState = qmInterface_->getInitialState();
     vector_t armInitState = initState.tail(6);
 
-    optimizedState = initState;
-    optimizedState.tail(6) = armInitState;
-//    optimizedState.segment<6>(6) = currentObservation_.state.segment<6>(6);
-//    optimizedState[8] += 0.05;
-
-//    optimizedState << currentObservation_.state.head(24), armInitState;
-
+    optimizedState << currentObservation_.state.head(24), armInitState;
+//    optimizedInput = uNominal;
 
     wbcTimer_.startTimer();
     vector_t x = wbc_->update(optimizedState, optimizedInput, measuredRbdState, plannedMode,

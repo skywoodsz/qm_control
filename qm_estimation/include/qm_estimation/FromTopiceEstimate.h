@@ -33,6 +33,7 @@ private:
     void publishLegState(const ros::Time& time, const ros::Duration& period);
 
     std::shared_ptr<realtime_tools::RealtimePublisher<qm_msgs::LegsState>> state_pub_;
+    std::shared_ptr<realtime_tools::RealtimePublisher<sensor_msgs::JointState>> joint_pub_;
     ros::Time last_publish_;
 
     ros::Subscriber sub_;
