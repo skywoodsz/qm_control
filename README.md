@@ -88,7 +88,7 @@ mon launch qm_controllers load_controller_mpc.launch
 
 ![angle_err](./docs/angle_err.png)
 
-***Analysis***: The motion of the base and end-effector pose  w.r.t. the initial pose when the end-effector is controlled to remain at a fixed pose during locomotion. While the base travels 30 cm, the end-effector’s deviation from its initial position is at most 3.5 mm and 2.7 degree.
+***Analysis***: The motion of the base and end-effector pose  w.r.t. the initial pose when the end-effector is controlled to remain at a fixed pose during locomotion. While the base travels 30 cm, the end-effector’s deviation from its initial position is at most 3.5 mm and 2.6 degree.
 
 ## Bugs & Feature Requesityts
 
