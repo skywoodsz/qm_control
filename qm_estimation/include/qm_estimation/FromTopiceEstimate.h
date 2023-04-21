@@ -8,7 +8,10 @@
 
 #include "qm_estimation/StateEstimateBase.h"
 
+#include <sensor_msgs/JointState.h>
+#include <qm_msgs/LegsState.h>
 #include <realtime_tools/realtime_buffer.h>
+#include <realtime_tools/realtime_publisher.h>
 
 namespace qm{
 using namespace ocs2;
@@ -27,8 +30,12 @@ public:
 
 private:
     void callback(const nav_msgs::Odometry::ConstPtr& msg);
+    void publishLegState(const ros::Time& time, const ros::Duration& period);
 
-    ros::Subscriber sub_, arm_joint_sub_;
+    std::shared_ptr<realtime_tools::RealtimePublisher<qm_msgs::LegsState>> state_pub_;
+    ros::Time last_publish_;
+
+    ros::Subscriber sub_;
     realtime_tools::RealtimeBuffer<nav_msgs::Odometry> buffer_;
 };
 

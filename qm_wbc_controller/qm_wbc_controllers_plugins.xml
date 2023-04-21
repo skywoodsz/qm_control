@@ -1,0 +1,10 @@
+<library path="lib/libqm_wbc_controller">
+
+    <class name="qm/QMWbcController" type="qm::QMWbcController"
+           base_class_type="controller_interface::ControllerBase">
+        <description>
+            The basic qm wbc controller.
+        </description>
+    </class>
+
+</library>

@@ -11,6 +11,7 @@ find_package(catkin REQUIRED
         qm_common
         realtime_tools
         tf2_ros
+        qm_msgs
         )
 
 find_package(PkgConfig REQUIRED)
@@ -27,6 +28,7 @@ catkin_package(
         qm_common
         realtime_tools
         tf2_ros
+        qm_msgs
 )
 
 ###########

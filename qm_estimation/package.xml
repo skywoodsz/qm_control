@@ -14,5 +14,6 @@
     <depend>qm_common</depend>
     <depend>realtime_tools</depend>
     <depend>tf2_ros</depend>
+    <depend>qm_msgs</depend>
 
 </package>
