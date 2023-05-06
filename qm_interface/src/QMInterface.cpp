@@ -280,20 +280,21 @@ matrix_t QMInterface::initializeInputCostWeight(const std::string &taskFile, con
     pinocchio::computeJointJacobians(model, data, q);
     pinocchio::updateFramePlacements(model, data);
 
-    matrix_t base2feetJac(totalContactDim, info.actuatedDofNum);
+    matrix_t base2feetJac(totalContactDim, info.actuatedDofNum-6);
     for (size_t i = 0; i < info.numThreeDofContacts; i++) {
         matrix_t jac = matrix_t::Zero(6, info.generalizedCoordinatesNum);
         pinocchio::getFrameJacobian(model, data, model.getBodyId(modelSettings_.contactNames3DoF[i]), pinocchio::LOCAL_WORLD_ALIGNED, jac);
-        base2feetJac.block(3 * i, 0, 3, info.actuatedDofNum) = jac.block(0, 6, 3, info.actuatedDofNum);
+        base2feetJac.block(3 * i, 0, 3, info.actuatedDofNum-6) = jac.block(0, 6, 3, info.actuatedDofNum-6);
     }
 
     matrix_t rTaskspace(info.inputDim, info.inputDim);
     loadData::loadEigenMatrix(taskFile, "R", rTaskspace);
     matrix_t r = rTaskspace;
-    // Joint velocities
-    r.block(totalContactDim, totalContactDim, info.actuatedDofNum, info.actuatedDofNum) =
-            base2feetJac.transpose() * rTaskspace.block(totalContactDim, totalContactDim, info.actuatedDofNum, info.actuatedDofNum) *
-            base2feetJac;
+    // Leg joint velocities
+    r.block(totalContactDim, totalContactDim, info.actuatedDofNum-6, info.actuatedDofNum-6) =
+            base2feetJac.transpose() * rTaskspace.block(totalContactDim, totalContactDim, info.actuatedDofNum-6, info.actuatedDofNum-6)
+            * base2feetJac;
+
     return r;
 }
 
