@@ -8,6 +8,8 @@
 
 qm_control is a quadruped manipulator controller using model predictive control and whole body control. We aim to make the quadruped manipulator perform better in coordination and balance. **The project is still under development, not the final version**.
 
+The controller assumes that there is no force on the end effector. If force on the end effector needs to be considered, see the [feature-force](https://github.com/skywoodsz/qm_control/tree/feature-force) branch.
+
 ## Installation
 
 ### Install dependencies
