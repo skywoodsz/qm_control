@@ -1,0 +1,8 @@
+<launch>
+
+    <!-- The rviz configuration file to load. -->
+    <arg name="rvizconfig"  default="$(find qm_controllers)/config/qm.rviz"/>
+
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" output="screen"/>
+
+</launch>

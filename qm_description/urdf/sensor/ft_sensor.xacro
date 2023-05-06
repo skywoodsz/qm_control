@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="ft_sensor">
+ 
+    <link name="ft_sensor">
+        <visual>
+            <geometry>
+                <cylinder radius="0.0375" length="0.01"/>
+            </geometry>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+        </visual>
+        <!-- <collision>
+            <geometry>
+                <cylinder radius="0.0375" length="0.01"/>
+            </geometry>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+        </collision> -->
+        <inertial>
+            <mass value="0.0001"/>
+            <inertia ixx="3.5989583333333335E-8"
+                     ixy="0.0"
+                     ixz="0.0"
+                     iyy="3.5156250000041194E-8"
+                     iyz="0.0"
+                     izz="7.03125E-8"/>
+        </inertial>
+        <!-- <inertial>
+            <mass value="0.01"/>
+            <inertia ixx="7.1441E-05"
+                     ixy="1.6499E-08"
+                     ixz="-4.9269E-09"
+                     iyy="7.146E-05"
+                     iyz="-8.5336E-09"
+                     izz="0.00013366"/>
+        </inertial> -->
+    </link>
+
+    <joint name="ft_sensor_joint" type="revolute">
+        <origin xyz="0.0 0.0 -0.1600" rpy="0.0 0.0 0.0"/>
+        <parent link="j2n6s300_link_6"/>
+        <child link="ft_sensor"/>
+        <axis xyz="0.0 1.0 0.0"/>
+        <limit lower="-0.0" upper="0.0" effort="0.0" velocity="0.0"/>
+    </joint>
+
+    <gazebo 
+      reference="ft_sensor_joint">
+     <provideFeedback>true</provideFeedback>
+    </gazebo>
+
+    <gazebo>
+    <plugin name="ft_sensor_joint" filename="libgazebo_ros_ft_sensor.so">
+        <updateRate>1000.0</updateRate>
+        <topicName>ft_sensor_topic</topicName>
+        <jointName>ft_sensor_joint</jointName>
+    </plugin>
+    </gazebo>
+
+    
+</robot>
