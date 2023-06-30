@@ -15,4 +15,5 @@
     <depend>pinocchio</depend>
     <depend>qm_common</depend>
     <depend>qm_msgs</depend>
+    <depend>qpoases_catkin</depend>
 </package>

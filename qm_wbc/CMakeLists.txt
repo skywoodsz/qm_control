@@ -3,8 +3,6 @@ project(qm_wbc)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-set(QPOASES_INLUDE_DIRS /usr/local/include/qpOASES)
-
 find_package(catkin REQUIRED
         COMPONENTS
         roscpp
@@ -12,6 +10,7 @@ find_package(catkin REQUIRED
         dynamic_reconfigure
         qm_common
         qm_msgs
+        qpoases_catkin
         )
 
 find_package(Eigen3 3.3 REQUIRED NO_MODULE)
@@ -64,24 +63,10 @@ add_dependencies(${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME}
         ${catkin_LIBRARIES}
         ${pinocchio_LIBRARIES}
-        qpOASES
         )
 
 target_compile_options(${PROJECT_NAME} PUBLIC ${OCS2_CXX_FLAGS})
 
-
-add_executable(angle_test
-        test/angle_test.cpp
-        )
-add_dependencies(angle_test
-        ${PROJECT_NAME}
-        ${catkin_EXPORTED_TARGETS}
-        )
-target_link_libraries(angle_test
-        ${PROJECT_NAME}
-        ${catkin_LIBRARIES}
-        )
-target_compile_options(angle_test PRIVATE ${OCS2_CXX_FLAGS})
 #########################
 ###   CLANG TOOLING   ###
 #########################
