@@ -1,3 +1,4 @@
+# copy from: https://github.com/qiayuanliao/legged_control.git
 cmake_minimum_required(VERSION 3.14)
 project(qpoases_catkin)
 
