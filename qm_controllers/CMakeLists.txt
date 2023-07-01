@@ -86,6 +86,7 @@ target_compile_options(${PROJECT_NAME} PUBLIC ${OCS2_CXX_FLAGS})
 add_executable(qm_target_trajectories_publisher
      src/QmTargetTrajectoriesPublisher_node.cpp
      src/QmTargetTrajectoriesPublisher.cpp
+     src/GaitJoyPublisher.cpp
      )
 add_dependencies(qm_target_trajectories_publisher
      ${catkin_EXPORTED_TARGETS}

@@ -3,7 +3,7 @@
 //
 
 #include "qm_controllers/QmTargetTrajectoriesPublisher.h"
-#include "qm_common/math_tool/mathConvert.h"
+#include "qm_controllers/GaitJoyPublisher.h"
 
 #include <ocs2_core/misc/LoadData.h>
 #include <ocs2_robotic_tools/common/RotationTransforms.h>
@@ -151,14 +151,17 @@ TargetTrajectories EEgoalPoseToTargetTrajectories(const Eigen::Vector3d& positio
 
 int main(int argc, char* argv[]) {
     const std::string robotName = "qm";
+    const std::string gaitName = "legged_robot";
 
     ::ros::init(argc, argv, robotName + "_target");
     ::ros::NodeHandle nodeHandle;
     // Get node parameters
     std::string referenceFile;
     std::string taskFile;
+    std::string gaitCommandFile;
     nodeHandle.getParam("/referenceFile", referenceFile);
     nodeHandle.getParam("/taskFile", taskFile);
+    nodeHandle.getParam("/gaitCommandFile", gaitCommandFile);
 
     loadData::loadCppDataType(referenceFile, "comHeight", COM_HEIGHT);
     loadData::loadEigenMatrix(referenceFile, "defaultJointState", DEFAULT_JOINT_STATE);
@@ -169,6 +172,8 @@ int main(int argc, char* argv[]) {
     QmTargetTrajectoriesInteractiveMarker targetPoseCommand(nodeHandle, robotName,
                                                             &EEgoalPoseToTargetTrajectories,
                                                             &cmdVelToTargetTrajectories);
+
+    GaitJoyPublisher gaitCommand(nodeHandle, gaitCommandFile, gaitName, false);
 
     ros::spin();
     // Successful exit

@@ -1,6 +1,7 @@
 <?xml version="1.0" ?>
 
 <launch>
+    <include file="$(find qm_controllers)/launch/joy_teleop.launch"/>
 
     <node pkg="ocs2_legged_robot_ros" type="legged_robot_gait_command" name="legged_robot_gait_command"
               output="screen"/>
