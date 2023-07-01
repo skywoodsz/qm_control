@@ -40,9 +40,8 @@ struct K
     scalar_t kd;
 };
 
-
 class QMController : public controller_interface::MultiInterfaceController<HybridJointInterface,
-                        hardware_interface::ImuSensorInterface, ContactSensorInterface> {
+        hardware_interface::ImuSensorInterface, ContactSensorInterface> {
 public:
     QMController() = default;
     ~QMController() override;
@@ -53,88 +52,78 @@ public:
     void stopping(const ros::Time& /*time*/) override { mpcRunning_ = false; }
 
 protected:
+    virtual void setHybridJointHardware(hardware_interface::RobotHW* robot_hw, ros::NodeHandle& controller_nh);
     virtual void setupInterface(const std::string& taskFile, const std::string& urdfFile, const std::string& referenceFile,
                                 bool verbose);
     virtual void setupMpc(ros::NodeHandle& controller_nh);
     virtual void setupMrt();
-    virtual void setupStateEstimate(const std::string& urdfFile, const std::vector<ContactSensorHandle>& contactSensorHandles,
-                                    const hardware_interface::ImuSensorHandle& imuSensorHandle);
-    virtual void armControl(const ros::Time &time, vector_t posDes, vector_t velDes, vector_t torque);
+    virtual void setupWbc(ros::NodeHandle& controller_nh, const std::string& taskFile);
+    virtual void setupStateEstimate(const std::string& taskFile, bool verbose);
+    virtual void updateJointState(vector_t& jointPos, vector_t& jointVel);
+    virtual void updateStateEstimation(const ros::Time& time, const ros::Duration& period);
+    virtual void updateControlLaw(const vector_t &posDes, const vector_t &velDes, const vector_t &torque);
 
-    vector_t invDynamic(const vector_t& stateDesired, const vector_t& inputDesired, const vector_t& rbdStateMeasured, size_t mode,
-                        scalar_t period);
     qm_msgs::ee_state createEeStateMsg(scalar_t time, vector_t state);
-    void armEeState(vector_t& ee_state);
     void dynamicCallback(qm_controllers::WeightConfig& config, uint32_t /*level*/);
 
+    // Interface
     std::shared_ptr<QMInterface> qmInterface_;
     std::shared_ptr<PinocchioEndEffectorKinematics> eeKinematicsPtr_;
     std::shared_ptr<PinocchioEndEffectorKinematics> armEeKinematicsPtr_;
+    std::vector<ContactSensorHandle> contactHandles_;
+    std::vector<HybridJointHandle> hybridJointHandles_;
+    hardware_interface::ImuSensorHandle imuSensorHandle_;
 
+    // State Estimation
+    SystemObservation currentObservation_;
+    vector_t measuredRbdState_;
+    std::shared_ptr<StateEstimateBase> stateEstimate_;
+    std::shared_ptr<CentroidalModelRbdConversions> rbdConversions_;
+
+    // MPC & WBC
     std::shared_ptr<MPC_BASE> mpc_;
     std::shared_ptr<MPC_MRT_Interface> mpcMrtInterface_;
-
-    std::shared_ptr<CentroidalModelRbdConversions> rbdConversions_;
-    std::shared_ptr<StateEstimateBase> stateEstimate_;
-    ros::Publisher observationPublisher_, eeStatePublisher_, jointVelPublisher_;
-
-    SystemObservation currentObservation_;
-    std::vector<HybridJointHandle> hybridJointHandles_;
-
+    std::shared_ptr<WbcBase> wbc_;
     std::shared_ptr<SafetyChecker> safetyChecker_;
-
     std::thread mpcThread_;
     std::atomic_bool controllerRunning_{}, mpcRunning_{};
     benchmark::RepeatedTimer mpcTimer_;
     benchmark::RepeatedTimer wbcTimer_;
 
+    // Visualization
+    std::shared_ptr<QmVisualizer> robotVisualizer_;
+    ros::Publisher observationPublisher_, eeStatePublisher_;
+
+    // Debug
     std::shared_ptr<dynamic_reconfigure::Server<qm_controllers::WeightConfig>> dynamic_srv_{};
     K arm_k_[6];
-    double arm_control_loop_hz_;
-    ros::Time last_time_;
-
-    std::shared_ptr<QmVisualizer> robotVisualizer_;
-    std::shared_ptr<WbcBase> wbc_;
-    
-    double arm_kp_wbc_{}, arm_kd_wbc_{};
-    
-private:
-    vector_t optimizedState_;
-    
+    scalar_t arm_control_loop_hz_;
+    scalar_t arm_kp_wbc_{}, arm_kd_wbc_{};
+    scalar_t d_arm_[6]{};
+    bool dog_control_, arm_control_;
+    scalar_t last_time_{};
 };
 
-/**
- * dummy feedback to valid mpc
- */
-class QMControllerDummyObserver : public  QMController{
+class QMMpcController : public QMController{
 public:
-    bool init(hardware_interface::RobotHW* robot_hw, ros::NodeHandle& controller_nh) override;
-    void starting(const ros::Time& time) override;
-    void update(const ros::Time& time, const ros::Duration& period) override;
+    QMMpcController() = default;
+    ~QMMpcController() = default;
 
 private:
-    vector_t optimizedState_, optimizedInput_;
-};
-
-/**
- * qm controller with arm manipulator
- */
-class QMControllerManipulator : public QMController{
-public:
-    bool init(hardware_interface::RobotHW* robot_hw, ros::NodeHandle& controller_nh) override;
-    void update(const ros::Time& time, const ros::Duration& period) override;
-private:
-    void setupStateEstimate(const std::string& urdfFile, const std::vector<ContactSensorHandle>& contactSensorHandles,
-                                 const hardware_interface::ImuSensorHandle& imuSensorHandle) override;
-    void setHardware(ros::NodeHandle& nh);
-    void armControl(const ros::Time &time, vector_t posDes, vector_t velDes, vector_t torque) override;
+    void setHybridJointHardware(hardware_interface::RobotHW *robot_hw, ros::NodeHandle &controller_nh);
+    void jointStateCallback(const sensor_msgs::JointState::ConstPtr &msg);
+    void setupWbc(ros::NodeHandle& controller_nh, const std::string& taskFile);
+    void updateJointState(vector_t& jointPos, vector_t& jointVel);
+    void updateControlLaw(const vector_t &posDes, const vector_t &velDes, const vector_t &torque);
 
     std::shared_ptr<realtime_tools::RealtimePublisher<std_msgs::Float64>> cmd_pub_[6];
+    ros::Subscriber arm_joint_sub_;
     realtime_tools::RealtimeBuffer<sensor_msgs::JointState> joint_state_buffer_;
-    vector_t optimizedState_;
 };
 
 }
+
+
 
 
 #endif //SRC_QMCONTROLLER_H

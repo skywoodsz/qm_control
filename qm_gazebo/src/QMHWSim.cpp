@@ -15,10 +15,6 @@ bool QMHWSim::initSim(const std::string& robot_namespace, ros::NodeHandle model_
 
     std::vector<std::string> names = ej_interface_.getNames();
 
-    // only dog
-    std::vector<std::string> dog_names = {"LF_HAA", "LF_HFE", "LF_KFE", "LH_HAA", "LH_HFE", "LH_KFE",
-                                          "RF_HAA", "RF_HFE", "RF_KFE", "RH_HAA", "RH_HFE", "RH_KFE"};
-
     for (const auto& name : names) { // names
         hybridJointDatas_.push_back(HybridJointData{.joint_ = ej_interface_.getHandle(name)});
         HybridJointData& back = hybridJointDatas_.back();
@@ -184,19 +180,17 @@ void QMHWSim::parseContacts(XmlRpc::XmlRpcValue &contactNames) {
     registerInterface(&contactSensorInterface_);
 }
 
-bool DogHwSim::initSim(const std::string& robot_namespace, ros::NodeHandle model_nh, gazebo::physics::ModelPtr parent_model,
+bool QMMpcHwSim::initSim(const std::string& robot_namespace, ros::NodeHandle model_nh, gazebo::physics::ModelPtr parent_model,
                       const urdf::Model* urdf_model, std::vector<transmission_interface::TransmissionInfo> transmissions) {
     bool ret = DefaultRobotHWSim::initSim(robot_namespace, model_nh, parent_model, urdf_model, transmissions);
     // Joint interface
     registerInterface(&hybridJointInterface_);
 
-    std::vector<std::string> names = ej_interface_.getNames();
-
-    // only dog
+    // Only Dog
     std::vector<std::string> dog_names = {"LF_HAA", "LF_HFE", "LF_KFE", "LH_HAA", "LH_HFE", "LH_KFE",
                                           "RF_HAA", "RF_HFE", "RF_KFE", "RH_HAA", "RH_HFE", "RH_KFE"};
 
-    for (const auto& name : dog_names) { // names
+    for (const auto& name : dog_names) {
         hybridJointDatas_.push_back(HybridJointData{.joint_ = ej_interface_.getHandle(name)});
         HybridJointData& back = hybridJointDatas_.back();
         hybridJointInterface_.registerHandle(HybridJointHandle(back.joint_, &back.posDes_, &back.velDes_, &back.kp_, &back.kd_, &back.ff_));
@@ -229,5 +223,5 @@ bool DogHwSim::initSim(const std::string& robot_namespace, ros::NodeHandle model
 } // namespace qm
 
 PLUGINLIB_EXPORT_CLASS(qm::QMHWSim, gazebo_ros_control::RobotHWSim)
-PLUGINLIB_EXPORT_CLASS(qm::DogHwSim, gazebo_ros_control::RobotHWSim)
+PLUGINLIB_EXPORT_CLASS(qm::QMMpcHwSim, gazebo_ros_control::RobotHWSim)
 GZ_REGISTER_MODEL_PLUGIN(gazebo_ros_control::GazeboRosControlPlugin)  // Default plugin

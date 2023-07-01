@@ -64,7 +64,7 @@ link_directories(
         ${pinocchio_LIBRARY_DIRS}
 )
 
-## Declare a cpp library
+# Declare a cpp library
 add_library(${PROJECT_NAME}
         src/QMController.cpp
         )
@@ -95,41 +95,7 @@ target_link_libraries(qm_target_trajectories_publisher
      )
 target_compile_options(qm_target_trajectories_publisher PRIVATE ${OCS2_CXX_FLAGS})
 
-#########################
-###   CLANG TOOLING   ###
-#########################
-find_package(cmake_clang_tools QUIET)
-if (cmake_clang_tools_FOUND)
-    message(STATUS "Run clang tooling for target " ${PROJECT_NAME})
-    add_clang_tooling(
-            TARGETS ${PROJECT_NAME} legged_target_trajectories_publisher
-            SOURCE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/src ${CMAKE_CURRENT_SOURCE_DIR}/include
-            CT_HEADER_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/include
-            CF_WERROR
-    )
-endif (cmake_clang_tools_FOUND)
 
-#############
-## Install ##
-#############
-
-# Mark executables and/or libraries for installation
-install(TARGETS ${PROJECT_NAME}
-        ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-        LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-        RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-        )
-
-# Mark cpp header files for installation
-install(DIRECTORY include/${PROJECT_NAME}/
-        DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
-        FILES_MATCHING PATTERN "*.h"
-        )
-
-# Install plugins
-install(FILES legged_controllers_plugins.xml
-        DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
-        )
 
 
 

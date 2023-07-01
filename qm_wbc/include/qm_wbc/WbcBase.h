@@ -48,19 +48,18 @@ protected:
 
     Task formulateBaseHeightMotionTask();
     Task formulateBaseAngularMotionTask();
+    Task formulateBaseLinearMotionTask();
     Task formulateBaseXYLinearAccelTask();
     Task formulateSwingLegTask();
 
     Task formulateArmJointNomalTrackingTask();
     Task formulateEeLinearMotionTrackingTask();
     Task formulateEeAngularMotionTrackingTask();
-    Task formulateEeAngularMotionDampTrackingTask();
-    Task formulatejointDampTrackingTask();
 
     Task formulateContactForceTask(const vector_t& inputDesired) const;
 private:
     void dynamicCallback(qm_wbc::WbcWeightConfig& config, uint32_t /*level*/);
-    void publishMsg();
+    void publishMsg(scalar_t time);
 
     std::shared_ptr<dynamic_reconfigure::Server<qm_wbc::WbcWeightConfig>> dynamic_srv_{};
 
@@ -68,7 +67,6 @@ private:
     PinocchioInterface pinocchioInterfaceMeasured_, pinocchioInterfaceDesired_;
     CentroidalModelInfo info_;
     CentroidalModelPinocchioMapping mapping_;
-
     std::unique_ptr<PinocchioEndEffectorKinematics> eeKinematics_, armEeKinematics_;
 
     contact_flag_t contactFlag_{};
@@ -87,20 +85,17 @@ private:
 
     scalar_t baseHeightKp_{}, baseHeightKd_{};
     scalar_t baseAngularKp_{}, baseAngularKd_{};
+    scalar_t baseLinearKp_{}, baseLinearKd_{};
 
     matrix_t jointKp_, jointKd_;
-    vector_t d_arm_;
 
     matrix_t armEeLinearKp_{}, armEeLinearKd_{};
     matrix_t armEeAngularKp_{}, armEeAngularKd_{};
-    vector_t d_ee_, da_ee_;
 
     size_t armEeFrameIdx_{};
 
-    Eigen::Matrix3d zyx2xyz_;
-
-    ros::Publisher ee_pub_;
-    scalar_t last_time_;
+    // Debug
+    ros::Publisher desiredPub_, measurePub_;
 };
 
 template <typename T>

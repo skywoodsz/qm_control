@@ -23,7 +23,7 @@
         <plugin name="gazebo_ros_control" filename="libqm_hw_sim.so">
             <robotNamespace>/</robotNamespace>
             <robotParam>qm_description</robotParam>
-            <robotSimType>qm_gazebo/DogHwSim</robotSimType>
+            <robotSimType>qm_gazebo/QMMpcHwSim</robotSimType>
         </plugin>
     </gazebo>
     

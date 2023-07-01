@@ -15,5 +15,6 @@
     <depend>pinocchio</depend>
     <depend>qm_common</depend>
     <depend>qm_msgs</depend>
+    <depend>ocs2_ros_interfaces</depend>
     <depend>qpoases_catkin</depend>
 </package>
