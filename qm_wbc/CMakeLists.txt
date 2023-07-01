@@ -1,8 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 project(qm_wbc)
 
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-
 find_package(catkin REQUIRED
         COMPONENTS
         roscpp
@@ -67,18 +65,4 @@ target_link_libraries(${PROJECT_NAME}
         )
 
 target_compile_options(${PROJECT_NAME} PUBLIC ${OCS2_CXX_FLAGS})
-
-#########################
-###   CLANG TOOLING   ###
-#########################
-find_package(cmake_clang_tools QUIET)
-if (cmake_clang_tools_FOUND)
-    message(STATUS "Run clang tooling for target " ${PROJECT_NAME})
-    add_clang_tooling(
-            TARGETS ${PROJECT_NAME}
-            SOURCE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/src ${CMAKE_CURRENT_SOURCE_DIR}/include
-            CT_HEADER_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/include
-            CF_WERROR
-    )
-endif (cmake_clang_tools_FOUND)
 

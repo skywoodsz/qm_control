@@ -448,12 +448,12 @@ Task WbcBase::formulateFrictionConeTask() {
     vector_t b(a.rows());
     b.setZero();
 
-    matrix_t frictionPyramic(5, 3);  // clang-format off
+    matrix_t frictionPyramic(5, 3);
     frictionPyramic << 0, 0, -1,
             1, 0, -frictionCoeff_,
             -1, 0, -frictionCoeff_,
             0, 1, -frictionCoeff_,
-            0,-1, -frictionCoeff_;  // clang-format on
+            0,-1, -frictionCoeff_;
 
     matrix_t d(5 * numContacts_ + 3 * (info_.numThreeDofContacts - numContacts_), numDecisionVars_);
     d.setZero();

@@ -3,8 +3,7 @@
     <name>qm_interface</name>
     <version>1.0.0</version>
     <description>Qm interface base on OCS2</description>
-    <maintainer email="skywoodszcn@gmail.com">Qiayuan Liao</maintainer>
-
+    <maintainer email="skywoodszcn@gmail.com">skywoodsz</maintainer>
     <license>BSD3</license>
     <author email="skywoodszcn@gmail.com">skywoodsz</author>
 

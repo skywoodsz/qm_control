@@ -7,9 +7,8 @@
     <license>BSD3</license>
     <author email="skywoodszcn@gmail.com">skywoodsz</author>
 
-    <!-- buildtool_depend: dependencies of the build process -->
     <buildtool_depend>catkin</buildtool_depend>
-    <!-- depend: build, export, and execution dependency -->
+
     <depend>roscpp</depend>
     <depend>qm_common</depend>
     <depend>gazebo_dev</depend>

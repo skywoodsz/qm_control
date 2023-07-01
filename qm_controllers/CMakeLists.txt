@@ -1,8 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 project(qm_controllers)
 
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-
 ## Find catkin macros and libraries
 find_package(catkin REQUIRED
         COMPONENTS
@@ -11,12 +9,11 @@ find_package(catkin REQUIRED
         qm_interface
         qm_estimation
         qm_wbc
+        qm_msgs
         controller_interface
         ocs2_legged_robot_ros
-        ocs2_self_collision_visualization
         angles
         dynamic_reconfigure
-        qm_msgs
         )
 
 find_package(PkgConfig REQUIRED)
@@ -37,13 +34,12 @@ catkin_package(
             qm_common
             qm_interface
             qm_estimation
+            qm_wbc
+            qm_msgs
             controller_interface
             ocs2_legged_robot_ros
             angles
             dynamic_reconfigure
-            qm_msgs
-            ocs2_legged_robot_ros
-            ocs2_self_collision_visualization
         DEPENDS
             pinocchio
 )
