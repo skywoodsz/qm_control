@@ -15,7 +15,6 @@ qm_control is a quadruped manipulator controller using model predictive control 
 ### Install dependencies
 
 - [OCS2](https://leggedrobotics.github.io/ocs2/installation.html#prerequisites)
-- [QPOASES](https://github.com/coin-or/qpOASES)
 - [ROS1-Noetic](http://wiki.ros.org/noetic)
 
 ### Clone and Build
@@ -66,8 +65,6 @@ After the manipulator is initialized, commands can be sent
 roslaunch qm_controllers load_qm_target.launch 
 # rviz
 mon launch qm_controllers rviz.launch
-# joy
-mon launch qm_controllers joy_teleop.launch
 ```
 
 ### MPC Only
@@ -83,6 +80,13 @@ Load the controller:
 ```
 mon launch qm_controllers load_controller_mpc.launch
 ```
+
+## Gamepad Control
+
+You can use the gamepad to control the quadruped base and the manipulator's end-effector, respectively.
+The schematic diagram of the gamepad is as follows:
+
+![joy](./docs/joy.png)
 
 ## End-effector stability testing
 
