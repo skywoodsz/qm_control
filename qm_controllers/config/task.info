@@ -1,4 +1,4 @@
-centroidalModelType             1      // 0: FullCentroidalDynamics, 1: Single Rigid Body Dynamics
+centroidalModelType             0      // 0: FullCentroidalDynamics, 1: Single Rigid Body Dynamics
 
 qm_interface
 {
@@ -11,7 +11,7 @@ model_settings
   phaseTransitionStanceTime     0.1
 
   verboseCppAd                  true
-  recompileLibrariesCppAd       false ;
+  recompileLibrariesCppAd       false
   modelFolderCppAd              /tmp/qm
 
   ; base frame of the robot (from URDF)
@@ -24,7 +24,7 @@ swing_trajectory_config
 {
   liftOffVelocity               0.05
   touchDownVelocity            -0.1
-  swingHeight                   0.15
+  swingHeight                   0.1
   touchdownAfterHorizon         0.2
   swingTimeScale                0.15
 }
@@ -166,18 +166,18 @@ initialState
    (11,0) 0.0     ; theta_base_x
 
    ;; Leg Joint Positions: [LF, LH, RF, RH] ;;
-   (12,0) -0.20   ; LF_HAA
-   (13,0)  0.62   ; LF_HFE
-   (14,0) -1.24   ; LF_KFE
-   (15,0) -0.20   ; LH_HAA
-   (16,0)  0.62   ; LH_HFE
-   (17,0) -1.24   ; LH_KFE
-   (18,0)  0.20   ; RF_HAA
-   (19,0)  0.62   ; RF_HFE
-   (20,0) -1.24   ; RF_KFE
-   (21,0)  0.20   ; RH_HAA
-   (22,0)  0.62   ; RH_HFE
-   (23,0) -1.24   ; RH_KFE
+   (12,0)   0.00   ; LF_HAA
+   (13,0)   0.80   ; LF_HFE
+   (14,0)  -1.50   ; LF_KFE
+   (15,0)   0.00   ; LH_HAA
+   (16,0)   0.80   ; LH_HFE
+   (17,0)  -1.50   ; LH_KFE
+   (18,0)   0.00   ; RF_HAA
+   (19,0)   0.80   ; RF_HFE
+   (20,0)  -1.50   ; RF_KFE
+   (21,0)   0.00   ; RH_HAA
+   (22,0)   0.80   ; RH_HFE
+   (23,0)  -1.50   ; RH_KFE
    
    ;; Arm Joint Positions: [joint1, joint2, joint3, joint4, joint5, joint6] ;;
    (24,0)  3.14   ; joint1
@@ -199,15 +199,15 @@ Q
   (2,2)   100.0     ; vcom_z 100.0
   (3,3)   10.0     ; L_x / robotMass 10.0
   (4,4)   30.0     ; L_y / robotMass 30.0
-  (5,5)   30.0     ; L_z / robotMass 30.0
+  (5,5)   100.0     ; L_z / robotMass 30.0
 
   ;; Base Pose: [position, orientation] ;;
-  (6,6)   1000   ; p_base_x 1000 500
-  (7,7)   1000   ; p_base_y 1000 500
-  (8,8)   1500.0   ; p_base_z 1500.0
-  (9,9)   500    ; theta_base_z 100.0
-  (10,10) 1000    ; theta_base_y 300
-  (11,11) 1000    ; theta_base_x 300
+  (6,6)   1000   ; p_base_x
+  (7,7)   1000   ; p_base_y
+  (8,8)   3000   ; p_base_z
+  (9,9)   1000    ; theta_base_z
+  (10,10) 2000    ; theta_base_y
+  (11,11) 2000    ; theta_base_x
 
   ;; Leg Joint Positions: [LF, LH, RF, RH] ;;
   (12,12) 5.0     ; LF_HAA
@@ -234,14 +234,14 @@ Q
 
 endEffector
 {
-  muPosition      1500.0 ; 
-  muOrientation    500.0 ; 
+  muPosition      2500.0 ;
+  muOrientation    500.0 ;
 }
 
 finalEndEffector
 {
-  muPosition      1500.0 ; 
-  muOrientation    500.0 ; 
+  muPosition      2500.0 ;
+  muOrientation    500.0 ;
 }
 
 ; control weight matrix
@@ -343,20 +343,8 @@ jointVelocityLimits
 }
 
 ; Whole body control
-torqueLimitsTask
-{
-   (0,0)  35.278   ; HAA
-   (1,0)  35.278   ; HFE
-   (2,0)  44.4     ; KFE
-}
-
 frictionConeTask
 {
   frictionCoefficient    0.3
 }
 
-swingLegTask
-{
-    kp                   350
-    kd                   37
-}

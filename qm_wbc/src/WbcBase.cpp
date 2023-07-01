@@ -57,6 +57,8 @@ WbcBase::WbcBase(const ocs2::PinocchioInterface &pinocchioInterface, ocs2::Centr
     armEeLinearKd_ = matrix_t::Zero(3, 3);
     armEeAngularKp_ = matrix_t::Zero(3, 3);
     armEeAngularKd_ = matrix_t::Zero(3, 3);
+    d_ee_ = vector3_t::Zero();
+    da_ee_ = vector3_t::Zero();
 
     ros::NodeHandle nh_weight = ros::NodeHandle(controller_nh, "wbc");
     desiredPub_ = nh_weight.advertise<ocs2_msgs::mpc_observation>("/qm_wbc_desired", 1);
@@ -102,7 +104,10 @@ void WbcBase::dynamicCallback(qm_wbc::WbcWeightConfig &config, uint32_t) {
     armEeAngularKd_(1, 1) = config.kd_ee_angular_y;
     armEeAngularKd_(2, 2) = config.kd_ee_angular_z;
 
-    // base
+    // Dog
+    swingKp_ = config.kp_swing;
+    swingKd_ = config.kd_swing;
+
     baseHeightKp_ = config.baseHeightKp;
     baseHeightKd_ = config.baseHeightKd;
 
@@ -111,6 +116,10 @@ void WbcBase::dynamicCallback(qm_wbc::WbcWeightConfig &config, uint32_t) {
 
     baseLinearKp_ = config.kp_base_linear;
     baseLinearKd_ = config.kd_base_linear;
+
+    // Debug
+    d_ee_ << config.d_ee_x, config.d_ee_y, config.d_ee_z;
+    da_ee_ << config.da_ee_z, config.da_ee_y, config.da_ee_x;
 
     ROS_INFO_STREAM("\033[32m Update the wbc param. \033[0m");
 }
@@ -586,7 +595,7 @@ vector_t WbcBase::updateCmd(ocs2::vector_t x_optimal) {
 void WbcBase::loadTasksSetting(const std::string &taskFile, bool verbose) {
     // Load task file
     legTorqueLimits_ = vector_t(3);
-    loadData::loadEigenMatrix(taskFile, "torqueLimitsTask", legTorqueLimits_);
+    legTorqueLimits_ = pinocchioInterfaceMeasured_.getModel().effortLimit.segment<3>(6);
 
     // arm torque limit
     armTorqueLimits_ = vector_t(6);
@@ -612,14 +621,6 @@ void WbcBase::loadTasksSetting(const std::string &taskFile, bool verbose) {
     if (verbose) {
         std::cerr << " #### =============================================================================\n";
     }
-
-    prefix = "swingLegTask.";
-    if (verbose) {
-        std::cerr << "\n #### Swing Leg Task:";
-        std::cerr << "\n #### =============================================================================\n";
-    }
-    loadData::loadPtreeValue(pt, swingKp_, prefix + "kp", verbose);
-    loadData::loadPtreeValue(pt, swingKd_, prefix + "kd", verbose);
 
 }
 

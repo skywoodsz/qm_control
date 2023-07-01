@@ -71,6 +71,7 @@ private:
 
     contact_flag_t contactFlag_{};
     size_t numContacts_{};
+    size_t armEeFrameIdx_{};
 
     vector_t qMeasured_, vMeasured_, inputLast_;
     vector_t qDesired_, vDesired_, baseAccDesired_;
@@ -86,15 +87,12 @@ private:
     scalar_t baseHeightKp_{}, baseHeightKd_{};
     scalar_t baseAngularKp_{}, baseAngularKd_{};
     scalar_t baseLinearKp_{}, baseLinearKd_{};
-
     matrix_t jointKp_, jointKd_;
-
     matrix_t armEeLinearKp_{}, armEeLinearKd_{};
     matrix_t armEeAngularKp_{}, armEeAngularKd_{};
 
-    size_t armEeFrameIdx_{};
-
     // Debug
+    vector3_t d_ee_, da_ee_;
     ros::Publisher desiredPub_, measurePub_;
 };
 

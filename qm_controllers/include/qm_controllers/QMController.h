@@ -34,12 +34,6 @@ namespace qm{
 using namespace ocs2;
 using namespace legged_robot;
 
-struct K
-{
-    scalar_t kp;
-    scalar_t kd;
-};
-
 class QMController : public controller_interface::MultiInterfaceController<HybridJointInterface,
         hardware_interface::ImuSensorInterface, ContactSensorInterface> {
 public:
@@ -96,11 +90,7 @@ protected:
 
     // Debug
     std::shared_ptr<dynamic_reconfigure::Server<qm_controllers::WeightConfig>> dynamic_srv_{};
-    K arm_k_[6];
-    scalar_t arm_control_loop_hz_;
     scalar_t arm_kp_wbc_{}, arm_kd_wbc_{};
-    scalar_t d_arm_[6]{};
-    bool dog_control_, arm_control_;
     scalar_t last_time_{};
 };
 

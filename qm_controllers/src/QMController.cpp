@@ -356,35 +356,9 @@ QMController::~QMController() {
 
 void QMController::dynamicCallback(qm_controllers::WeightConfig &config, uint32_t) {
     ROS_INFO_STREAM("\033[32m Update the param. \033[0m");
-    arm_k_[0].kp = config.kp_arm_1;
-    arm_k_[0].kd = config.kd_arm_1;
-
-    arm_k_[1].kp = config.kp_arm_2;
-    arm_k_[1].kd = config.kd_arm_2;
-
-    arm_k_[2].kp = config.kp_arm_3;
-    arm_k_[2].kd = config.kd_arm_3;
-
-    arm_k_[3].kp = config.kp_arm_4;
-    arm_k_[3].kd = config.kd_arm_4;
-
-    arm_k_[4].kp = config.kp_arm_5;
-    arm_k_[4].kd = config.kd_arm_5;
-
-    arm_k_[5].kp = config.kp_arm_6;
-    arm_k_[5].kd = config.kd_arm_6;
-
-    arm_control_loop_hz_ = config.arm_control_loop_hz;
 
     arm_kp_wbc_ = config.kp_arm_wbc;
     arm_kd_wbc_ = config.kd_arm_wbc;
-
-    d_arm_[0] = config.d_arm_1;
-    d_arm_[1] = config.d_arm_2;
-    d_arm_[2] = config.d_arm_3;
-    d_arm_[3] = config.d_arm_4;
-    d_arm_[4] = config.d_arm_5;
-    d_arm_[5] = config.d_arm_6;
 }
 
 /***************************************************************************************************/
@@ -455,14 +429,14 @@ void QMMpcController::updateControlLaw(const vector_t &posDes, const vector_t &v
         hybridJointHandles_[j].setCommand(posDes(j), velDes(j), 0, 3, torque(j));
     }
 
-    if(currentObservation_.time - last_time_ > 1.0 / arm_control_loop_hz_) // arm_control_loop_hz_
+    if(currentObservation_.time - last_time_ > 1.0 / 100.0) // arm_control_loop_hz_
     {
         // hardware cmd
         for (size_t j = 0; j < 6; ++j) {
             if(cmd_pub_[j]->trylock())
             {
                 cmd_pub_[j]->msg_.data =
-                    currentObservation_.state(24 + j) + velDes(12 + j) * 1.0 / arm_control_loop_hz_;
+                    currentObservation_.state(24 + j) + velDes(12 + j) * 1.0 / 100.0;
                 cmd_pub_[j]->unlockAndPublish();
             }
         }

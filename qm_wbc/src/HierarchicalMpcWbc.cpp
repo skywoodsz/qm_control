@@ -31,6 +31,5 @@ vector_t HierarchicalMpcWbc::update(const vector_t& stateDesired, const vector_t
     HoQp hoQp(task2, std::make_shared<HoQp>(task1, std::make_shared<HoQp>(task0)));
     vector_t x_optimal = hoQp.getSolutions();
     return WbcBase::updateCmd(x_optimal);
-
 }
 }
