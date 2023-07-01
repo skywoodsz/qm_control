@@ -83,10 +83,10 @@ TargetTrajectories cmdVelToTargetTrajectories(const vector_t& cmdVel,
     const scalar_t timeToTarget = TIME_TO_TARGET;
     const vector_t BaseTargetPose = [&]() {
         vector_t target(6);
-        target(0) = cmdVelRot(0) * timeToTarget; // BaseCurrenPose(0) + cmdVelRot(0) * timeToTarget
-        target(1) = cmdVelRot(1) * timeToTarget; // BaseCurrenPose(1) + cmdVelRot(1) * timeToTarget
+        target(0) = BaseCurrenPose(0) + cmdVelRot(0) * timeToTarget;
+        target(1) = BaseCurrenPose(1) + cmdVelRot(1) * timeToTarget;
         target(2) = COM_HEIGHT;
-        target(3) = cmdVel(3) * timeToTarget; // BaseCurrenPose(3) + cmdVel(3) * timeToTarget
+        target(3) = BaseCurrenPose(3) + cmdVel(3) * timeToTarget;
         target(4) = 0;
         target(5) = 0;
         return target;
@@ -122,11 +122,11 @@ TargetTrajectories EEgoalPoseToTargetTrajectories(const Eigen::Vector3d& positio
     const vector_t BaseTargetPose = [&](){
         vector_t target(6);
         target.setZero();
-//        target = BaseCurrenPose;
+        target = BaseCurrenPose;
         target(0) = position(0) - 0.52;
         target(1) = position(1) - 0.09;
         target(2) = COM_HEIGHT;
-        target(4) = 0;
+        target(4) = 0.0;
         target(5) = 0;
         return target;
     }();
