@@ -6,7 +6,7 @@
 <img src="./docs/202306191701 00_00_33-00_00_48.gif" width = "400" />
 <img src="./docs/202306291554 00_01_03-00_01_19~2.gif" width = "400"  />
 </p>
-
+**Video Links:** [YouTube](https://www.youtube.com/channel/UCRsGxiYkqGvwHsZz1F8rHug), [bilibili](https://space.bilibili.com/3289375) (for China).
 
 
 ## Overview
