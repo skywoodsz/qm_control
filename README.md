@@ -1,10 +1,10 @@
 # qm_control
 
 <p align = "center">
-<img src="./docs/chicken_hand.gif"  width = "550"/>
-<img src="./docs/chicken_hand.gif"  width = "550"/>
-<img src="./docs/202306191701 00_00_33-00_00_48.gif" width = "550" />
-<img src="./docs/202306291554 00_01_03-00_01_19~2.gif" width = "550"  />
+<img src="./docs/chicken_hand.gif"  width = "400"/>
+<img src="./docs/chicken_hand.gif"  width = "400"/>
+<img src="./docs/202306191701 00_00_33-00_00_48.gif" width = "400" />
+<img src="./docs/202306291554 00_01_03-00_01_19~2.gif" width = "400"  />
 </p>
 
 
