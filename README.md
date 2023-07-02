@@ -1,14 +1,19 @@
 # qm_control
 
-![chicken_hand](./docs/chicken_hand.gif)
+<p align = "center">
+<img src="./docs/chicken_hand.gif"  width = "550"/>
+<img src="./docs/chicken_hand.gif"  width = "550"/>
+<img src="./docs/202306191701 00_00_33-00_00_48.gif" width = "550" />
+<img src="./docs/202306291554 00_01_03-00_01_19~2.gif" width = "550"  />
+</p>
 
-![position_cmd](./docs/position_cmd.gif)
+
 
 ## Overview
 
 qm_control is a quadruped manipulator controller using model predictive control and whole body control. We aim to make the quadruped manipulator perform better in coordination and balance. **The project is still under development, not the final version**.
 
-***Notes:*** The controller assumes that there is no force on the end effector. If force on the end effector needs to be considered, see the [feature-force](https://github.com/skywoodsz/qm_control/tree/feature-force) branch.
+***Notes:*** The controller assumes that there is no force on the end effector. If force on the end effector needs to be considered, see the [feature-force](https://github.com/skywoodsz/qm_control/tree/feature-force) branch. The implement on the real robot hardware can see the branch [feature-real](https://github.com/skywoodsz/qm_control/tree/feature-real).
 
 ## Installation
 
@@ -104,3 +109,4 @@ This project is still in the early stages of development and we welcome feedback
 
 - [ ] Solve the singularity problem.
 - [ ] Add the foot trajectory plannning.
+- [ ] Merge the branch feature-real to main.
