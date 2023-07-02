@@ -194,8 +194,8 @@ Q
   scaling 1e+0 ;
 
   ;; Normalized Centroidal Momentum: [linear, angular] ;;
-  (0,0)   15.0     ; vcom_x
-  (1,1)   15.0     ; vcom_y
+  (0,0)   50.0     ; vcom_x
+  (1,1)   50.0     ; vcom_y
   (2,2)   300.0    ; vcom_z
   (3,3)   10.0     ; L_x / robotMass
   (4,4)   30.0     ; L_y / robotMass
@@ -234,14 +234,14 @@ Q
 
 endEffector
 {
-  muPosition      2500.0 ;
-  muOrientation    500.0 ;
+  muPosition      2000.0 ;
+  muOrientation    1000.0 ;
 }
 
 finalEndEffector
 {
-  muPosition      2500.0 ;
-  muOrientation    500.0 ;
+  muPosition      2000.0 ;
+  muOrientation    1000.0 ;
 }
 
 ; control weight matrix
