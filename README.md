@@ -94,10 +94,10 @@ The schematic diagram of the gamepad is as follows:
 ![joy](./docs/joy.png)
 
 ## End-effector stability testing
-
-![position_err](./docs/position_err.png)
-
-![angle_err](./docs/angle_err.png)
+<p align = "center">
+<img src="./docs/position_err.png"  width = "400"/>
+<img src="./docs/angle_err.png"  width = "400"/>
+</p>
 
 ***Analysis***: The motion of the base and end-effector pose  w.r.t. the initial pose when the end-effector is controlled to remain at a fixed pose during locomotion. While the base travels 30 cm, the end-effector’s deviation from its initial position is at most 3.5 mm and 2.6 degree.
 
