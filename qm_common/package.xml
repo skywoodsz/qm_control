@@ -5,8 +5,9 @@
     <description>The qm_common package</description>
 
     <maintainer email="skywoodszcn@gmail.com">skywoodsz</maintainer>
-
     <license>BSD3</license>
+    <author email="skywoodszcn@gmail.com">skywoodsz</author>
+
 
     <buildtool_depend>catkin</buildtool_depend>
 
