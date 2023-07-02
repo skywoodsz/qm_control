@@ -515,6 +515,9 @@ Task WbcBase::formulateEeLinearMotionTrackingTask() {
     vector3_t linear_acc = armEeLinearKp_ * (posDesired[0] - posMeasured[0])
             + armEeLinearKd_ * (velDesired[0] - velMeasured[0]);
 
+//    vector3_t linear_acc = armEeLinearKp_ * (d_ee_ - posMeasured[0])
+//                           + armEeLinearKd_ * (- velMeasured[0]);
+
     a.block(0, 0, 3, info_.generalizedCoordinatesNum) = arm_j_.block(0, 0, 3, info_.generalizedCoordinatesNum);
 
     b = linear_acc - arm_dj_.block(0, 0, 3, info_.generalizedCoordinatesNum) * vMeasured_;
@@ -543,6 +546,10 @@ Task WbcBase::formulateEeAngularMotionTrackingTask(){
     vector3_t armDesiredEeAngularVel = pinocchio::getFrameVelocity(Dmodel, Ddata, armEeFrameIdx_,
                                                    pinocchio::LOCAL_WORLD_ALIGNED).angular();
 
+//    vector3_t eularAngle = vector3_t::Zero();
+//    eularAngle << da_ee_(0), da_ee_(1), da_ee_(2);
+//    matrix3_t rotationEeReferenceToWorld = getRotationMatrixFromZyxEulerAngles<scalar_t>(eularAngle);
+
     // error
     vector3_t error = rotationErrorInWorld<scalar_t>(rotationEeReferenceToWorld, rotationEeMeasuredToWorld);
 
@@ -554,8 +561,12 @@ Task WbcBase::formulateEeAngularMotionTrackingTask(){
     a.block(0, 0, 3, info_.generalizedCoordinatesNum) = arm_j_.block(3, 0, 3, info_.generalizedCoordinatesNum);
     a.block(0, 3, 3, 3).setZero();
 
-    b = armEeAngularKp_ * error + armEeAngularKd_ * (armDesiredEeAngularVel - armCurrentEeAngularVel)
+//    b = armEeAngularKp_ * error + armEeAngularKd_ * (armDesiredEeAngularVel - armCurrentEeAngularVel)
+//        - arm_dj_tmp.block(3, 0, 3, info_.generalizedCoordinatesNum) * vMeasured_;
+
+    b = armEeAngularKp_ * error + armEeAngularKd_ * (- armCurrentEeAngularVel)
         - arm_dj_tmp.block(3, 0, 3, info_.generalizedCoordinatesNum) * vMeasured_;
+
 
     return {a, b, matrix_t(), vector_t()};
 }

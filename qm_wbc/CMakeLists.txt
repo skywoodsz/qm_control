@@ -54,7 +54,7 @@ add_library(${PROJECT_NAME}
         src/HoQp.cpp
         src/WbcBase.cpp
         src/HierarchicalWbc.cpp
-        include/qm_wbc/HierarchicalMpcWbc.h src/HierarchicalMpcWbc.cpp)
+        src/HierarchicalMpcWbc.cpp)
 add_dependencies(${PROJECT_NAME}
         ${catkin_EXPORTED_TARGETS}
         ${PROJECT_NAME}_gencfg

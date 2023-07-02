@@ -17,14 +17,14 @@ model_settings
   ; base frame of the robot (from URDF)
   baseFrame                       "base_link"
   ; end-effector frame of the robot (from URDF)
-  eeFrame                         "j2n6s300_end_effector" 
+  eeFrame                         "j2n6s300_end_effector"
 }
 
 swing_trajectory_config
 {
   liftOffVelocity               0.05
   touchDownVelocity            -0.1
-  swingHeight                   0.1
+  swingHeight                   0.15
   touchdownAfterHorizon         0.2
   swingTimeScale                0.15
 }
@@ -178,7 +178,7 @@ initialState
    (21,0)   0.00   ; RH_HAA
    (22,0)   0.80   ; RH_HFE
    (23,0)  -1.50   ; RH_KFE
-   
+
    ;; Arm Joint Positions: [joint1, joint2, joint3, joint4, joint5, joint6] ;;
    (24,0)  3.14   ; joint1
    (25,0)  3.61   ; joint2
@@ -194,20 +194,20 @@ Q
   scaling 1e+0 ;
 
   ;; Normalized Centroidal Momentum: [linear, angular] ;;
-  (0,0)   15.0     ; vcom_x 15.0
-  (1,1)   15.0     ; vcom_y 15.0
-  (2,2)   100.0     ; vcom_z 100.0
-  (3,3)   10.0     ; L_x / robotMass 10.0
-  (4,4)   30.0     ; L_y / robotMass 30.0
-  (5,5)   100.0     ; L_z / robotMass 30.0
+  (0,0)   15.0     ; vcom_x
+  (1,1)   15.0     ; vcom_y
+  (2,2)   300.0    ; vcom_z
+  (3,3)   10.0     ; L_x / robotMass
+  (4,4)   30.0     ; L_y / robotMass
+  (5,5)   30.0     ; L_z / robotMass
 
   ;; Base Pose: [position, orientation] ;;
-  (6,6)   1000   ; p_base_x
-  (7,7)   1000   ; p_base_y
-  (8,8)   3000   ; p_base_z
-  (9,9)   1000    ; theta_base_z
-  (10,10) 2000    ; theta_base_y
-  (11,11) 2000    ; theta_base_x
+  (6,6)   1000.0   ; p_base_x
+  (7,7)   1000.0   ; p_base_y
+  (8,8)   3000.0   ; p_base_z
+  (9,9)   1000.0    ; theta_base_z
+  (10,10) 2000.0    ; theta_base_y
+  (11,11) 2000.0    ; theta_base_x
 
   ;; Leg Joint Positions: [LF, LH, RF, RH] ;;
   (12,12) 5.0     ; LF_HAA
@@ -224,7 +224,7 @@ Q
   (23,23) 2.5     ; RH_KFE
 
   ;; Arm Joint Positions: [joint1, joint2, joint3, joint4, joint5, joint6] ;;
-  (24,24) 0.0     ; joint_1 
+  (24,24) 0.0     ; joint_1
   (25,25) 0.0     ; joint_2
   (26,26) 5.0     ; joint_3
   (27,27) 0.0     ; joint_4
@@ -308,7 +308,7 @@ jointPositionLimits
 jointVelocityLimits
 {
   ; relaxed log barrier mu
-  mu      0.1 
+  mu      0.1
 
   ; relaxed log barrier delta
   delta   1e-3
@@ -347,4 +347,3 @@ frictionConeTask
 {
   frictionCoefficient    0.3
 }
-
