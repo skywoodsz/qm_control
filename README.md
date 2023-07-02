@@ -94,7 +94,7 @@ The schematic diagram of the gamepad is as follows:
 <img src="./docs/joy.png" alt="joy" width = "500"/>
 </p>
 
-## End-effector stability testing
+## End-effector stability testing in simulation
 <p align = "center">
 <img src="./docs/position_err.png"  width = "400"/>
 <img src="./docs/angle_err.png"  width = "400"/>
