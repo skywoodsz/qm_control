@@ -3,14 +3,17 @@
 //
 
 #include <pinocchio/fwd.hpp>
+
+#include "qm_wbc/WbcBase.h"
+#include "qm_wbc/HoQp.h"
+
 #include <pinocchio/algorithm/centroidal.hpp>
 #include <pinocchio/algorithm/crba.hpp>
 #include <pinocchio/algorithm/frames.hpp>
 #include <pinocchio/algorithm/rnea.hpp>
 #include <utility>
 
-#include "qm_wbc/WbcBase.h"
-
+#include <ocs2_msgs/mpc_observation.h>
 #include <ocs2_mpc/SystemObservation.h>
 #include <ocs2_ros_interfaces/common/RosMsgConversions.h>
 #include <ocs2_robotic_tools/common/AngularVelocityMapping.h>
@@ -18,6 +21,9 @@
 #include <ocs2_robotic_tools/common/RotationDerivativesTransforms.h>
 #include <ocs2_centroidal_model/AccessHelperFunctions.h>
 #include <ocs2_centroidal_model/ModelHelperFunctions.h>
+
+#include <geometry_msgs/Vector3.h>
+#include <nav_msgs/Odometry.h>
 
 namespace qm{
 using namespace ocs2;
@@ -40,6 +46,7 @@ WbcBase::WbcBase(const ocs2::PinocchioInterface &pinocchioInterface, ocs2::Centr
     vDesired_ = vector_t(info_.generalizedCoordinatesNum);
     inputLast_ = vector_t::Zero(info_.inputDim);
     baseAccDesired_ = vector_t(6);
+    g_ = vector_t(info_.generalizedCoordinatesNum);
 
     const auto& model = pinocchioInterfaceMeasured_.getModel();
     armEeFrameIdx_ = model.getBodyId(armEeKinematics_->getIds()[0]);
@@ -57,13 +64,14 @@ WbcBase::WbcBase(const ocs2::PinocchioInterface &pinocchioInterface, ocs2::Centr
     armEeLinearKd_ = matrix_t::Zero(3, 3);
     armEeAngularKp_ = matrix_t::Zero(3, 3);
     armEeAngularKd_ = matrix_t::Zero(3, 3);
-    d_ee_ = vector3_t::Zero();
-    da_ee_ = vector3_t::Zero();
+
+    ros::NodeHandle nh;
+    ee_pub_ = nh.advertise<nav_msgs::Odometry>("qm_wbc_ee", 1);
+    desiredPub_ = nh.advertise<ocs2_msgs::mpc_observation>("/legged_wbc_desired", 1);
+    measurePub_ = nh.advertise<ocs2_msgs::mpc_observation>("/legged_wbc_measure", 1);
+    last_time_ = 0.;
 
     ros::NodeHandle nh_weight = ros::NodeHandle(controller_nh, "wbc");
-    desiredPub_ = nh_weight.advertise<ocs2_msgs::mpc_observation>("/qm_wbc_desired", 1);
-    measurePub_ = nh_weight.advertise<ocs2_msgs::mpc_observation>("/qm_wbc_measure", 1);
-
     dynamic_srv_ = std::make_shared<dynamic_reconfigure::Server<qm_wbc::WbcWeightConfig>>(nh_weight);
     dynamic_reconfigure::Server<qm_wbc::WbcWeightConfig>::CallbackType cb = [this](auto&& PH1, auto&& PH2) {
         dynamicCallback(std::forward<decltype(PH1)>(PH1), std::forward<decltype(PH2)>(PH2));
@@ -72,7 +80,21 @@ WbcBase::WbcBase(const ocs2::PinocchioInterface &pinocchioInterface, ocs2::Centr
 }
 
 void WbcBase::dynamicCallback(qm_wbc::WbcWeightConfig &config, uint32_t) {
-    // joint
+
+    // Dog
+    swingKp_ = config.kp_swing;
+    swingKd_ = config.kd_swing;
+
+    baseHeightKp_ = config.baseHeightKp;
+    baseHeightKd_ = config.baseHeightKd;
+
+    baseAngularKp_ = config.kp_base_angular;
+    baseAngularKd_ = config.kd_base_angular;
+
+    baseLinearKp_ = config.kp_base_linear;
+    baseLinearKd_ = config.kd_base_linear;
+
+    // Arm joint
     jointKp_(0, 0) = config.kp_arm_joint_1;
     jointKp_(1, 1) = config.kp_arm_joint_2;
     jointKp_(2, 2) = config.kp_arm_joint_3;
@@ -87,7 +109,7 @@ void WbcBase::dynamicCallback(qm_wbc::WbcWeightConfig &config, uint32_t) {
     jointKd_(4, 4) = config.kd_arm_joint_5;
     jointKd_(5, 5) = config.kd_arm_joint_6;
 
-    // ee linear
+    // EE
     armEeLinearKp_(0, 0) = config.kp_ee_linear_x;
     armEeLinearKp_(1, 1) = config.kp_ee_linear_y;
     armEeLinearKp_(2, 2) = config.kp_ee_linear_z;
@@ -103,23 +125,6 @@ void WbcBase::dynamicCallback(qm_wbc::WbcWeightConfig &config, uint32_t) {
     armEeAngularKd_(0, 0) = config.kd_ee_angular_x;
     armEeAngularKd_(1, 1) = config.kd_ee_angular_y;
     armEeAngularKd_(2, 2) = config.kd_ee_angular_z;
-
-    // Dog
-    swingKp_ = config.kp_swing;
-    swingKd_ = config.kd_swing;
-
-    baseHeightKp_ = config.baseHeightKp;
-    baseHeightKd_ = config.baseHeightKd;
-
-    baseAngularKp_ = config.kp_base_angular;
-    baseAngularKd_ = config.kd_base_angular;
-
-    baseLinearKp_ = config.kp_base_linear;
-    baseLinearKd_ = config.kd_base_linear;
-
-    // Debug
-    d_ee_ << config.d_ee_x, config.d_ee_y, config.d_ee_z;
-    da_ee_ << config.da_ee_z, config.da_ee_y, config.da_ee_x;
 
     ROS_INFO_STREAM("\033[32m Update the wbc param. \033[0m");
 }
@@ -137,9 +142,7 @@ vector_t WbcBase::update(const ocs2::vector_t &stateDesired, const ocs2::vector_
     updateMeasured(rbdStateMeasured);
     updateDesired(stateDesired, inputDesired, period);
 
-    // Debug
-    // publishMsg(time);
-
+//    publishMsg(time);
     return {};
 }
 
@@ -220,6 +223,10 @@ void WbcBase::updateMeasured(const ocs2::vector_t &rbdStateMeasured) {
     arm_dj_.setZero(); // must
     pinocchio::getFrameJacobian(model, data, armEeFrameIdx_, pinocchio::LOCAL_WORLD_ALIGNED, arm_j_);
     pinocchio::getFrameJacobianTimeVariation(model, data, armEeFrameIdx_, pinocchio::LOCAL_WORLD_ALIGNED, arm_dj_);
+
+    // For gravity compensation
+    pinocchio::computeGeneralizedGravity(model, data, qMeasured_);
+    g_ = data.g;
 }
 
 void WbcBase::updateDesired(const ocs2::vector_t &stateDesired, const ocs2::vector_t &inputDesired, ocs2::scalar_t period) {
@@ -255,20 +262,6 @@ void WbcBase::updateDesired(const ocs2::vector_t &stateDesired, const ocs2::vect
 
     baseAccDesired_.setZero();
     baseAccDesired_ = AbInv * centroidalMomentumRate;
-}
-
-Task WbcBase::formulateBaseLinearMotionTask() {
-    matrix_t a(2, numDecisionVars_);
-    vector_t b(a.rows());
-
-    a.setZero();
-    b.setZero();
-    a.block(0, 0, 2, 2) = matrix_t::Identity(2, 2);
-
-    b = baseAccDesired_.head(2) + baseLinearKp_ * (qDesired_.head(2) - qMeasured_.head(2))
-        + baseLinearKd_ * (vDesired_.head(2) - vMeasured_.head(2));
-
-    return {a, b, matrix_t(), vector_t()};
 }
 
 // Tracking base xy linear motion task
@@ -448,12 +441,12 @@ Task WbcBase::formulateFrictionConeTask() {
     vector_t b(a.rows());
     b.setZero();
 
-    matrix_t frictionPyramic(5, 3);
+    matrix_t frictionPyramic(5, 3);  // clang-format off
     frictionPyramic << 0, 0, -1,
             1, 0, -frictionCoeff_,
             -1, 0, -frictionCoeff_,
             0, 1, -frictionCoeff_,
-            0,-1, -frictionCoeff_;
+            0,-1, -frictionCoeff_;  // clang-format on
 
     matrix_t d(5 * numContacts_ + 3 * (info_.numThreeDofContacts - numContacts_), numDecisionVars_);
     d.setZero();
@@ -488,10 +481,8 @@ Task WbcBase::formulateArmJointNomalTrackingTask()
         jointKd(i, i) = jointKd_(i, i);
     }
 
-    b = jointKp * (qDesired_.segment<6>(info_.generalizedCoordinatesNum-6)
-            - qMeasured_.segment<6>(info_.generalizedCoordinatesNum-6))
-        + jointKd * (vDesired_.segment<6>(info_.generalizedCoordinatesNum-6)
-                - vMeasured_.segment<6>(info_.generalizedCoordinatesNum-6));
+    b = jointKp * (qDesired_.segment<6>(info_.generalizedCoordinatesNum-6) - qMeasured_.segment<6>(info_.generalizedCoordinatesNum-6))
+        + jointKd* (- vMeasured_.segment<6>(info_.generalizedCoordinatesNum-6));
 
     return {a, b, matrix_t(), vector_t()};
 }
@@ -517,6 +508,8 @@ Task WbcBase::formulateEeLinearMotionTrackingTask() {
 
     a.block(0, 0, 3, info_.generalizedCoordinatesNum) = arm_j_.block(0, 0, 3, info_.generalizedCoordinatesNum);
 
+    matrix_t arm_dj_tmp = arm_dj_.block(0, 0, 3, info_.generalizedCoordinatesNum);
+    arm_dj_tmp.block(0, 0, 3, info_.generalizedCoordinatesNum-6).setZero();
     b = linear_acc - arm_dj_.block(0, 0, 3, info_.generalizedCoordinatesNum) * vMeasured_;
 
     return {a, b, matrix_t(), vector_t()};
@@ -536,26 +529,78 @@ Task WbcBase::formulateEeAngularMotionTrackingTask(){
     vector3_t armCurrentEeAngularVel = pinocchio::getFrameVelocity(Mmodel, Mdata, armEeFrameIdx_,
                                                                    pinocchio::LOCAL_WORLD_ALIGNED).angular();
 
+   // desired
+   const auto& Dmodel = pinocchioInterfaceDesired_.getModel();
+   auto& Ddata = pinocchioInterfaceDesired_.getData();
+   matrix3_t rotationEeReferenceToWorld = Ddata.oMf[armEeFrameIdx_].rotation();
+   vector3_t armDesiredEeAngularVel = pinocchio::getFrameVelocity(Dmodel, Ddata, armEeFrameIdx_,
+                                                  pinocchio::LOCAL_WORLD_ALIGNED).angular();
+
+    // error
+    vector3_t error = rotationErrorInWorld<scalar_t>(rotationEeReferenceToWorld, rotationEeMeasuredToWorld); //
+
+    a.block(0, 0, 3, info_.generalizedCoordinatesNum) = arm_j_.block(3, 0, 3, info_.generalizedCoordinatesNum);
+
+    b = armEeAngularKp_ * error + armEeAngularKd_ * (- armCurrentEeAngularVel)
+        - arm_dj_.block(3, 0, 3, info_.generalizedCoordinatesNum) * vMeasured_;
+
+    return {a, b, matrix_t(), vector_t()};
+}
+
+Task WbcBase::formulatejointDampTrackingTask()
+{
+    matrix_t a(6, numDecisionVars_);
+    vector_t b(a.rows());
+    a.setZero();
+    b.setZero();
+
+    scalar_t damp = 0.001;
+    a.block(0, info_.generalizedCoordinatesNum-6, 6, 6) = damp * matrix_t::Identity(6, 6);
+
+    return {a, b, matrix_t(), vector_t()};
+}
+
+Task WbcBase::formulateEeAngularMotionDampTrackingTask() {
+    matrix_t a(3, numDecisionVars_);
+    vector_t b(a.rows());
+    a.setZero();
+    b.setZero();
+
+    // measure
+    const auto& Mmodel = pinocchioInterfaceMeasured_.getModel();
+    auto& Mdata = pinocchioInterfaceMeasured_.getData();
+
+    matrix3_t rotationEeMeasuredToWorld = Mdata.oMf[armEeFrameIdx_].rotation();
+    vector3_t armCurrentEeAngularVel = pinocchio::getFrameVelocity(Mmodel, Mdata, armEeFrameIdx_,
+                                                                   pinocchio::LOCAL_WORLD_ALIGNED).angular();
+
     // desired
     const auto& Dmodel = pinocchioInterfaceDesired_.getModel();
     auto& Ddata = pinocchioInterfaceDesired_.getData();
     matrix3_t rotationEeReferenceToWorld = Ddata.oMf[armEeFrameIdx_].rotation();
     vector3_t armDesiredEeAngularVel = pinocchio::getFrameVelocity(Dmodel, Ddata, armEeFrameIdx_,
-                                                   pinocchio::LOCAL_WORLD_ALIGNED).angular();
-
+                                                                   pinocchio::LOCAL_WORLD_ALIGNED).angular();
     // error
     vector3_t error = rotationErrorInWorld<scalar_t>(rotationEeReferenceToWorld, rotationEeMeasuredToWorld);
 
     matrix_t arm_dj_tmp = matrix_t(6, info_.generalizedCoordinatesNum);
     arm_dj_tmp.setZero();
     arm_dj_tmp = arm_dj_;
-    arm_dj_tmp.block(3, 3, 3, 3).setZero();
+    arm_dj_tmp.block(0, 3, 3, 3).setZero();
 
-    a.block(0, 0, 3, info_.generalizedCoordinatesNum) = arm_j_.block(3, 0, 3, info_.generalizedCoordinatesNum);
-    a.block(0, 3, 3, 3).setZero();
+    Eigen::Matrix<scalar_t, 3, 6> ones;
+    ones.fill(1);
+    a.block(0, info_.generalizedCoordinatesNum-6, 3, 6) = ones;
 
-    b = armEeAngularKp_ * error + armEeAngularKd_ * (armDesiredEeAngularVel - armCurrentEeAngularVel)
-        - arm_dj_tmp.block(3, 0, 3, info_.generalizedCoordinatesNum) * vMeasured_;
+    DMat<double> arm_j_tmp, arm_j_inv;
+    arm_j_tmp.resize(3, info_.generalizedCoordinatesNum);
+    arm_j_tmp = arm_j_;
+
+    pseudoInverse(arm_j_tmp, 0.001, arm_j_inv);
+    arm_j_inv.resize(info_.generalizedCoordinatesNum, 3);
+
+    b = arm_j_inv * (armEeAngularKp_ * error + armEeAngularKd_ * (armDesiredEeAngularVel - armCurrentEeAngularVel)
+        - arm_dj_tmp.block(3, 0, 3, info_.generalizedCoordinatesNum) * vMeasured_);
 
     return {a, b, matrix_t(), vector_t()};
 }
@@ -575,6 +620,33 @@ Task WbcBase::formulateContactForceTask(const vector_t& inputDesired) const {
     return {a, b, matrix_t(), vector_t()};
 }
 
+Task WbcBase::formulateBaseAccelTask() {
+    matrix_t a(6, numDecisionVars_);
+    vector_t b(a.rows());
+
+    a.setZero();
+    b.setZero();
+
+    a.block(0, 0, 6, 6) = matrix_t::Identity(6, 6);
+    b = baseAccDesired_.head(6);
+
+    return {a, b, matrix_t(), vector_t()};
+}
+
+Task WbcBase::formulateBaseLinearTask() {
+    matrix_t a(2, numDecisionVars_);
+    vector_t b(a.rows());
+
+    a.setZero();
+    b.setZero();
+    a.block(0, 0, 2, 2) = matrix_t::Identity(2, 2);
+
+    b = baseAccDesired_.head(2) + baseLinearKp_ * (qDesired_.head(2) - qMeasured_.head(2))
+            + baseLinearKd_ * (vDesired_.head(2) - vMeasured_.head(2));
+
+    return {a, b, matrix_t(), vector_t()};
+}
+
 vector_t WbcBase::updateCmd(ocs2::vector_t x_optimal) {
     auto& data = pinocchioInterfaceMeasured_.getData();
 
@@ -586,16 +658,58 @@ vector_t WbcBase::updateCmd(ocs2::vector_t x_optimal) {
     matrix_t a = (matrix_t(info_.actuatedDofNum, getNumDecisionVars())<< Mj, -Jj_T).finished();
 
     vector_t torque_optimal = a * x_optimal + hj;
+    torque_optimal.tail(6) -= g_.tail(6); // gravity
 
     vector_t cmd = (vector_t(numDecisionVars_ + info_.actuatedDofNum)<<x_optimal, torque_optimal).finished();
 
     return cmd;
 }
 
+Task WbcBase::computeAccQP(const vector_t& tau, const vector_t& force) const{
+    matrix_t a(info_.generalizedCoordinatesNum, numDecisionVars_);
+    vector_t b(a.rows());
+    a.setZero();
+    b.setZero();
+
+    auto& data = pinocchioInterfaceMeasured_.getData();
+
+    matrix_t Mb, Jcb_T;
+    vector_t hb;
+    vector_t tau_augment(info_.generalizedCoordinatesNum);
+    tau_augment << Vector6::Zero(), tau;
+
+    Mb = data.M;
+    hb = data.nle;
+    Jcb_T = j_.transpose();
+
+    a << Mb, -Jcb_T;
+    b = -hb + tau_augment;
+
+    return {a, b, matrix_t(), matrix_t()};
+}
+
+vector_t WbcBase::computeAcc(const vector_t& tau, const vector_t& force){
+    const auto& model = pinocchioInterfaceMeasured_.getModel();
+    auto& data = pinocchioInterfaceMeasured_.getData();
+
+    pinocchio::container::aligned_vector<pinocchio::Force> fextDesired(model.njoints, pinocchio::Force::Zero());
+    for (size_t i = 0; i < info_.numThreeDofContacts; i++) {
+        const auto frameIndex = info_.endEffectorFrameIndices[i];
+        const auto jointIndex = model.frames[frameIndex].parent;
+        const Vector3 translationJointFrameToContactFrame = model.frames[frameIndex].placement.translation();
+        const Matrix3 rotationWorldFrameToJointFrame = data.oMi[jointIndex].rotation().transpose();
+        const Vector3 contactForce = rotationWorldFrameToJointFrame * force.segment<3>(3*i);
+        fextDesired[jointIndex].linear() = contactForce;
+        fextDesired[jointIndex].angular() = translationJointFrameToContactFrame.cross(contactForce);
+    }
+
+    return pinocchio::rnea(model, data, qMeasured_, vMeasured_, tau, fextDesired);
+}
+
 void WbcBase::loadTasksSetting(const std::string &taskFile, bool verbose) {
     // Load task file
     legTorqueLimits_ = vector_t(3);
-    legTorqueLimits_ = pinocchioInterfaceMeasured_.getModel().effortLimit.segment<3>(6);
+    loadData::loadEigenMatrix(taskFile, "torqueLimitsTask", legTorqueLimits_);
 
     // arm torque limit
     armTorqueLimits_ = vector_t(6);
@@ -621,6 +735,14 @@ void WbcBase::loadTasksSetting(const std::string &taskFile, bool verbose) {
     if (verbose) {
         std::cerr << " #### =============================================================================\n";
     }
+
+    prefix = "swingLegTask.";
+    if (verbose) {
+        std::cerr << "\n #### Swing Leg Task:";
+        std::cerr << "\n #### =============================================================================\n";
+    }
+    loadData::loadPtreeValue(pt, swingKp_, prefix + "kp", verbose);
+    loadData::loadPtreeValue(pt, swingKd_, prefix + "kd", verbose);
 
 }
 

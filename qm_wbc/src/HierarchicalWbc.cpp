@@ -14,32 +14,24 @@ HierarchicalWbc::HierarchicalWbc(const ocs2::PinocchioInterface &pinocchioInterf
         : WbcBase(pinocchioInterface, info, eeKinematics, armEeKinematics, controller_nh){
 }
 
-
-vector_t HierarchicalWbc::update(const vector_t& stateDesired, const vector_t& inputDesired, const vector_t& rbdStateMeasured, size_t mode,
-                                 scalar_t period, scalar_t time) {
+vector_t HierarchicalWbc::update(const ocs2::vector_t &stateDesired, const ocs2::vector_t &inputDesired,
+                                 const ocs2::vector_t &rbdStateMeasured, size_t mode, ocs2::scalar_t period,
+                                 ocs2::scalar_t time) {
 
     WbcBase::update(stateDesired, inputDesired, rbdStateMeasured, mode, period, time);
-
     Task task0 = formulateFloatingBaseEomTask() + formulateTorqueLimitsTask()
-            + formulateNoContactMotionTask() + formulateFrictionConeTask();
-    Task taskInit = formulateArmJointNomalTrackingTask();
+             + formulateFrictionConeTask() + formulateNoContactMotionTask();
 
-    Task task1 = formulateBaseHeightMotionTask() + formulateBaseAngularMotionTask()
-                 + formulateEeLinearMotionTrackingTask() + formulateEeAngularMotionTrackingTask()
-                 + formulateSwingLegTask() * 100;
-    Task task3 = formulateContactForceTask(inputDesired) + formulateBaseXYLinearAccelTask();
+    Task task1 = formulateBaseHeightMotionTask() + formulateBaseLinearTask()
+           + formulateSwingLegTask() * 100 + formulateBaseAngularMotionTask();
 
-    if(time < 10)
-    {
-        HoQp hoQp(task3, std::make_shared<HoQp>(taskInit, std::make_shared<HoQp>(task0)));
-        vector_t x_optimal = hoQp.getSolutions();
-        return WbcBase::updateCmd(x_optimal);
-    }
-    else
-    {
-        HoQp hoQp(task3, std::make_shared<HoQp>(task1, std::make_shared<HoQp>(task0))); //
-        vector_t x_optimal = hoQp.getSolutions();
-        return WbcBase::updateCmd(x_optimal);
-    }
+    Task task2 = formulateContactForceTask(inputDesired);
+
+    HoQp hoQp(task2, std::make_shared<HoQp>(task1, std::make_shared<HoQp>(task0)));
+
+    vector_t x_optimal = hoQp.getSolutions();
+    return WbcBase::updateCmd(x_optimal);
 }
+
+
 }

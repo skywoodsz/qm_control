@@ -8,6 +8,14 @@
     <!-- manipulatior -->
     <xacro:include filename="$(find qm_description)/urdf/manipulator/j2n6s300fix.xacro"/>
 
+    <!-- camera -->
+    <link name="camera_pose_frame" />
+    <joint name="camera_joint" type="fixed">
+        <parent link= "base" />
+        <child link = "camera_pose_frame" />
+        <origin xyz="0.12 0.0 0.18" rpy="0.0 0.0 0.0" /> 
+    </joint>
+
     <link name="arm_base_link" />
 
     <joint name="manipulator_joint" type="fixed">

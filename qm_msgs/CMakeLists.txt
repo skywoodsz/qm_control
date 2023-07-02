@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.0.2)
 project(qm_msgs)
 
 find_package(catkin REQUIRED
@@ -12,6 +12,7 @@ add_message_files(
     ee_state.msg
     arm_torque.msg
     base_state.msg
+    MotorState.msg
 )
 
 generate_messages(

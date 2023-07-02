@@ -2,10 +2,12 @@
 // Created by skywoodsz on 2023/2/21.
 //
 
+// Pinocchio
 #include <pinocchio/fwd.hpp>  // forward declarations must be included first.
 #include <pinocchio/algorithm/frames.hpp>
 #include <pinocchio/algorithm/jacobian.hpp>
 
+// Qm
 #include "qm_interface/QMInterface.h"
 #include "qm_interface/dynamics/QMDynamicsAD.h"
 #include "qm_interface/constraint/NormalVelocityConstraintCppAd.h"
@@ -14,6 +16,7 @@
 #include "qm_interface/constraint/EndEffectorConstraint.h"
 #include "qm_interface/cost/LeggedRobotQuadraticTrackingCost.h"
 
+// Ocs2
 #include <ocs2_centroidal_model/AccessHelperFunctions.h>
 #include <ocs2_centroidal_model/CentroidalModelPinocchioMapping.h>
 #include <ocs2_centroidal_model/FactoryFunctions.h>
@@ -99,7 +102,7 @@ void QMInterface::setupOptimalControlProblem(const std::string &taskFile, const 
     problemPtr_->costPtr->add("baseTrackingCost", getBaseTrackingCost(taskFile, centroidalModelInfo_, verbose));
 
     // 2. ee cost
-    // TODO: switch for user
+    // TODO: switch by the user
     problemPtr_->stateSoftConstraintPtr->add("endEffector", getEndEffectorConstraint(*pinocchioInterfacePtr_, taskFile, "endEffector", verbose));
     problemPtr_->finalSoftConstraintPtr->add("finalEndEffector", getEndEffectorConstraint(*pinocchioInterfacePtr_, taskFile, "finalEndEffector", verbose));
 

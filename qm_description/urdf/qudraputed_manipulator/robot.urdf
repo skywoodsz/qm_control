@@ -31,7 +31,14 @@
   <material name="white">
     <color rgba="1.0 1.0 1.0 1.0"/>
   </material>
-
+  <!-- ros_control plugin -->
+  <!-- <gazebo>
+        <plugin name="gazebo_ros_control" filename="liblegged_hw_sim.so">
+            <robotNamespace>/</robotNamespace>
+            <robotParam>legged_robot_description</robotParam>
+            <robotSimType>legged_gazebo/LeggedHWSim</robotSimType>
+        </plugin>
+    </gazebo> -->
   <gazebo>
     <plugin filename="libgazebo_ros_p3d.so" name="p3d_base_controller">
       <alwaysOn>true</alwaysOn>
@@ -798,14 +805,56 @@
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
   </transmission>
-  
-  
+  <!-- links      		mesh_no
+   base           		0
+   shoulder       		1
+   arm            		2
+   forearm        		3
+   wrist          		4
+   arm_mico       		5
+   arm_half1 (7dof)		6
+   arm_half2 (7dof)		7
+   wrist_spherical_1  8
+   wrist_spherical_2  9
+
+   hand 3 finger  		55
+   hand_2finger   		56
+   finger_proximal		57
+   finger_distal      58
+-->
+  <!-- links      		mesh_no
+   base           		0
+   shoulder       		1
+   arm            		2
+   forearm        		3
+   wrist          		4
+   arm_mico       		5
+   arm_half1 (7dof)		6
+   arm_half2 (7dof)		7
+   wrist_spherical_1  8
+   wrist_spherical_2  9
+
+   hand 3 finger  		55
+   hand_2finger   		56
+   finger_proximal		57
+   finger_distal      58
+-->
+  <!-- Import all Gazebo-customization elements -->
+  <!-- <xacro:include filename="$(find qm_description)/urdf/manipulator/common/kinova.gazebo" /> -->
+  <!-- camera -->
+  <link name="camera_odom_frame"/>
+  <joint name="camera_joint" type="fixed">
+    <parent link="base"/>
+    <child link="camera_odom_frame"/>
+    <origin rpy="0.0 0.0 0.0" xyz="0.12 0.0 0.18"/>
+  </joint>
   <link name="arm_base_link"/>
   <joint name="manipulator_joint" type="fixed">
     <parent link="base"/>
     <child link="arm_base_link"/>
     <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.01"/>
   </joint>
+  <!-- <xacro:gazebo_config robot_namespace="${prefix}"/> -->
   <link name="j2n6s300_link_base">
     <visual>
       <geometry>
@@ -815,11 +864,6 @@
         <color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1"/>
       </material>
     </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://qm_description/meshes/manipulator/base.dae"/>
-      </geometry>
-    </collision>
     <inertial>
       <mass value="0.46784"/>
       <origin rpy="0 0 0" xyz="0 0 0.1255"/>
@@ -847,11 +891,6 @@
         <mesh filename="package://qm_description/meshes/manipulator/ring_big.dae"/>
       </geometry>
     </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://qm_description/meshes/manipulator/shoulder.dae"/>
-      </geometry>
-    </collision>
     <inertial>
       <mass value="0.7477"/>
       <origin xyz="0 -0.002 -0.0605"/>
@@ -876,8 +915,17 @@
       <mechanicalReduction>160</mechanicalReduction>
     </actuator>
   </transmission>
-
-
+  <!--For torque sensing in simulation-->
+  <gazebo reference="j2n6s300_joint_1">
+    <provideFeedback>true</provideFeedback>
+  </gazebo>
+  <gazebo>
+    <plugin filename="libgazebo_ros_ft_sensor.so" name="ft_sensor">
+      <updateRate>30.0</updateRate>
+      <topicName>j2n6s300_joint_1_ft_sensor_topic</topicName>
+      <jointName>j2n6s300_joint_1</jointName>
+    </plugin>
+  </gazebo>
   <link name="j2n6s300_link_2">
     <visual>
       <geometry>
@@ -892,11 +940,6 @@
         <mesh filename="package://qm_description/meshes/manipulator/ring_big.dae"/>
       </geometry>
     </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://qm_description/meshes/manipulator/arm.dae"/>
-      </geometry>
-    </collision>
     <inertial>
       <mass value="0.99"/>
       <origin xyz="0 -0.2065 -0.01"/>
@@ -921,7 +964,17 @@
       <mechanicalReduction>160</mechanicalReduction>
     </actuator>
   </transmission>
-
+  <!--For torque sensing in simulation-->
+  <gazebo reference="j2n6s300_joint_2">
+    <provideFeedback>true</provideFeedback>
+  </gazebo>
+  <gazebo>
+    <plugin filename="libgazebo_ros_ft_sensor.so" name="ft_sensor">
+      <updateRate>30.0</updateRate>
+      <topicName>j2n6s300_joint_2_ft_sensor_topic</topicName>
+      <jointName>j2n6s300_joint_2</jointName>
+    </plugin>
+  </gazebo>
   <link name="j2n6s300_link_3">
     <visual>
       <geometry>
@@ -936,11 +989,6 @@
         <mesh filename="package://qm_description/meshes/manipulator/ring_big.dae"/>
       </geometry>
     </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://qm_description/meshes/manipulator/forearm.dae"/>
-      </geometry>
-    </collision>
     <inertial>
       <mass value="0.6763"/>
       <origin xyz="0 0.081 -0.0086"/>
@@ -965,7 +1013,17 @@
       <mechanicalReduction>160</mechanicalReduction>
     </actuator>
   </transmission>
-
+  <!--For torque sensing in simulation-->
+  <gazebo reference="j2n6s300_joint_3">
+    <provideFeedback>true</provideFeedback>
+  </gazebo>
+  <gazebo>
+    <plugin filename="libgazebo_ros_ft_sensor.so" name="ft_sensor">
+      <updateRate>30.0</updateRate>
+      <topicName>j2n6s300_joint_3_ft_sensor_topic</topicName>
+      <jointName>j2n6s300_joint_3</jointName>
+    </plugin>
+  </gazebo>
   <link name="j2n6s300_link_4">
     <visual>
       <geometry>
@@ -980,11 +1038,6 @@
         <mesh filename="package://qm_description/meshes/manipulator/ring_small.dae"/>
       </geometry>
     </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://qm_description/meshes/manipulator/wrist.dae"/>
-      </geometry>
-    </collision>
     <inertial>
       <mass value="0.426367"/>
       <origin xyz="0 -0.037 -0.0642"/>
@@ -1009,7 +1062,17 @@
       <mechanicalReduction>160</mechanicalReduction>
     </actuator>
   </transmission>
-
+  <!--For torque sensing in simulation-->
+  <gazebo reference="j2n6s300_joint_4">
+    <provideFeedback>true</provideFeedback>
+  </gazebo>
+  <gazebo>
+    <plugin filename="libgazebo_ros_ft_sensor.so" name="ft_sensor">
+      <updateRate>30.0</updateRate>
+      <topicName>j2n6s300_joint_4_ft_sensor_topic</topicName>
+      <jointName>j2n6s300_joint_4</jointName>
+    </plugin>
+  </gazebo>
   <link name="j2n6s300_link_5">
     <visual>
       <geometry>
@@ -1024,11 +1087,6 @@
         <mesh filename="package://qm_description/meshes/manipulator/ring_small.dae"/>
       </geometry>
     </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://qm_description/meshes/manipulator/wrist.dae"/>
-      </geometry>
-    </collision>
     <inertial>
       <mass value="0.426367"/>
       <origin xyz="0 -0.037 -0.0642"/>
@@ -1053,7 +1111,17 @@
       <mechanicalReduction>160</mechanicalReduction>
     </actuator>
   </transmission>
-
+  <!--For torque sensing in simulation-->
+  <gazebo reference="j2n6s300_joint_5">
+    <provideFeedback>true</provideFeedback>
+  </gazebo>
+  <gazebo>
+    <plugin filename="libgazebo_ros_ft_sensor.so" name="ft_sensor">
+      <updateRate>30.0</updateRate>
+      <topicName>j2n6s300_joint_5_ft_sensor_topic</topicName>
+      <jointName>j2n6s300_joint_5</jointName>
+    </plugin>
+  </gazebo>
   <link name="j2n6s300_link_6">
     <visual>
       <geometry>
@@ -1068,11 +1136,6 @@
         <mesh filename="package://qm_description/meshes/manipulator/ring_small.dae"/>
       </geometry>
     </visual>
-    <collision>
-      <geometry>
-        <mesh filename="package://qm_description/meshes/manipulator/hand_3finger.dae"/>
-      </geometry>
-    </collision>
     <inertial>
       <mass value="0.99"/>
       <origin xyz="0 0 -0.06"/>
@@ -1097,7 +1160,17 @@
       <mechanicalReduction>160</mechanicalReduction>
     </actuator>
   </transmission>
-
+  <!--For torque sensing in simulation-->
+  <gazebo reference="j2n6s300_joint_6">
+    <provideFeedback>true</provideFeedback>
+  </gazebo>
+  <gazebo>
+    <plugin filename="libgazebo_ros_ft_sensor.so" name="ft_sensor">
+      <updateRate>30.0</updateRate>
+      <topicName>j2n6s300_joint_6_ft_sensor_topic</topicName>
+      <jointName>j2n6s300_joint_6</jointName>
+    </plugin>
+  </gazebo>
   <link name="j2n6s300_end_effector"/>
   <joint name="j2n6s300_joint_end_effector" type="fixed">
     <parent link="j2n6s300_link_6"/>
@@ -1105,4 +1178,13 @@
     <axis xyz="0 0 0"/>
     <origin rpy="3.141592653589793 0 1.5707963267948966" xyz="0 0 -0.1600"/>
   </joint>
+  <!--     <xacro:kinova_3fingers link_hand="${prefix}_link_6" prefix="${prefix}_"/> -->
+  <!-- ros_control plugin -->
+  <gazebo>
+    <plugin filename="libqm_hw_sim.so" name="gazebo_ros_control">
+      <robotNamespace>/</robotNamespace>
+      <robotParam>qm_description</robotParam>
+      <robotSimType>qm_gazebo/QMHWSim</robotSimType>
+    </plugin>
+  </gazebo>
 </robot>

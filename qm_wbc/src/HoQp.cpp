@@ -69,9 +69,9 @@ void HoQp::buildHMatrix() {
         zTaTaz.setZero();
     }
 
-    h_ = (matrix_t(numDecisionVars_ + numSlackVars_, numDecisionVars_ + numSlackVars_)  
+    h_ = (matrix_t(numDecisionVars_ + numSlackVars_, numDecisionVars_ + numSlackVars_)  // clang-format off
             << zTaTaz, zeroNvNx_.transpose(),
-            zeroNvNx_, eyeNvNv_)  
+            zeroNvNx_, eyeNvNv_)  // clang-format on
             .finished();
 }
 
@@ -101,10 +101,10 @@ void HoQp::buildDMatrix() {
 
     // NOTE: This is upside down compared to the paper,
     // but more consistent with the rest of the algorithm
-    d_ = (matrix_t(2 * numSlackVars_ + numPrevSlackVars_, numDecisionVars_ + numSlackVars_)  
+    d_ = (matrix_t(2 * numSlackVars_ + numPrevSlackVars_, numDecisionVars_ + numSlackVars_)  // clang-format off
             << zeroNvNx_, -eyeNvNv_,
             stackedTasksPrev_.d_ * stackedZPrev_, stackedZero,
-            dCurrZ, -eyeNvNv_)  
+            dCurrZ, -eyeNvNv_)  // clang-format on
             .finished();
 }
 

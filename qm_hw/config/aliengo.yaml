@@ -1,0 +1,6 @@
+qm_hw:
+  loop_frequency: 800 # 800
+  cycle_time_error_threshold: 0.002 # 0.002
+  thread_priority: 95
+  power_limit: 9 # 7
+  contact_threshold: 40 # 40 35

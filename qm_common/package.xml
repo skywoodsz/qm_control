@@ -8,7 +8,6 @@
     <license>BSD3</license>
     <author email="skywoodszcn@gmail.com">skywoodsz</author>
 
-
     <buildtool_depend>catkin</buildtool_depend>
 
     <build_depend>cmake_clang_tools</build_depend>

@@ -46,4 +46,3 @@ target_link_libraries(qm_hw_sim
         ${GAZEBO_LIBRARIES}
         )
 
-

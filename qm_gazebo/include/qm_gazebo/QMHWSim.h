@@ -63,7 +63,7 @@ protected:
 
 };
 
-class QMMpcHwSim : public QMHWSim{
+class DogHwSim : public QMHWSim{
     bool initSim(const std::string& robot_namespace, ros::NodeHandle model_nh, gazebo::physics::ModelPtr parent_model,
                  const urdf::Model* urdf_model, std::vector<transmission_interface::TransmissionInfo> transmissions) override;
 

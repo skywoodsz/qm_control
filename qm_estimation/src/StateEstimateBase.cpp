@@ -1,7 +1,6 @@
 //
 // Created by skywoodsz on 2023/2/28.
 //
-// copy from: https://github.com/qiayuanliao/legged_control
 
 #include <pinocchio/fwd.hpp>
 #include <pinocchio/algorithm/frames.hpp>
@@ -14,7 +13,6 @@
 #include <ocs2_legged_robot/common/Types.h>
 #include <ocs2_robotic_tools/common/RotationDerivativesTransforms.h>
 #include <ocs2_robotic_tools/common/RotationTransforms.h>
-
 
 namespace qm{
 using namespace ocs2;

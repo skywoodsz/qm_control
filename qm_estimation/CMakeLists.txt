@@ -44,7 +44,7 @@ link_directories(
 ## Declare a cpp library
 add_library(${PROJECT_NAME}
         src/StateEstimateBase.cpp
-        src/FromTopiceEstimate.cpp
+        src/LinearKalmanFilter.cpp
         )
 
 target_link_libraries(${PROJECT_NAME}
@@ -52,5 +52,4 @@ target_link_libraries(${PROJECT_NAME}
         ${pinocchio_LIBRARIES}
         )
 
-target_compile_options(${PROJECT_NAME} PUBLIC ${OCS2_CXX_FLAGS})
-
+target_compile_options(${PROJECT_NAME} PUBLIC ${OCS2_CXX_FLAGS})            

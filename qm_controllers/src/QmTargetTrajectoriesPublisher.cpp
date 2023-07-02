@@ -14,7 +14,7 @@ using namespace ocs2;
 
 visualization_msgs::InteractiveMarker QmTargetTrajectoriesInteractiveMarker::createInteractiveMarker() const {
     visualization_msgs::InteractiveMarker interactiveMarker;
-    interactiveMarker.header.frame_id = "world";
+    interactiveMarker.header.frame_id = "odom";
     interactiveMarker.header.stamp = ros::Time::now();
     interactiveMarker.name = "Goal";
     interactiveMarker.scale = 0.2;

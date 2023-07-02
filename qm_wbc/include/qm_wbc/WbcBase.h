@@ -24,6 +24,8 @@ using namespace legged_robot;
 class WbcBase{
     using Vector6 = Eigen::Matrix<scalar_t, 6, 1>;
     using Matrix6 = Eigen::Matrix<scalar_t, 6, 6>;
+    using Vector3 = Eigen::Matrix<scalar_t, 3, 1>;
+    using Matrix3 = Eigen::Matrix<scalar_t, 3, 3>;
 
 public:
     WbcBase(const PinocchioInterface& pinocchioInterface, CentroidalModelInfo info,
@@ -48,18 +50,23 @@ protected:
 
     Task formulateBaseHeightMotionTask();
     Task formulateBaseAngularMotionTask();
-    Task formulateBaseLinearMotionTask();
     Task formulateBaseXYLinearAccelTask();
     Task formulateSwingLegTask();
+    Task formulateBaseAccelTask();
+    Task formulateBaseLinearTask();
 
     Task formulateArmJointNomalTrackingTask();
     Task formulateEeLinearMotionTrackingTask();
     Task formulateEeAngularMotionTrackingTask();
+    Task formulateEeAngularMotionDampTrackingTask();
+    Task formulatejointDampTrackingTask();
 
     Task formulateContactForceTask(const vector_t& inputDesired) const;
 private:
     void dynamicCallback(qm_wbc::WbcWeightConfig& config, uint32_t /*level*/);
     void publishMsg(scalar_t time);
+    vector_t computeAcc(const vector_t& tau, const vector_t& force);
+    Task computeAccQP(const vector_t& tau, const vector_t& force) const;
 
     std::shared_ptr<dynamic_reconfigure::Server<qm_wbc::WbcWeightConfig>> dynamic_srv_{};
 
@@ -67,11 +74,11 @@ private:
     PinocchioInterface pinocchioInterfaceMeasured_, pinocchioInterfaceDesired_;
     CentroidalModelInfo info_;
     CentroidalModelPinocchioMapping mapping_;
+
     std::unique_ptr<PinocchioEndEffectorKinematics> eeKinematics_, armEeKinematics_;
 
     contact_flag_t contactFlag_{};
     size_t numContacts_{};
-    size_t armEeFrameIdx_{};
 
     vector_t qMeasured_, vMeasured_, inputLast_;
     vector_t qDesired_, vDesired_, baseAccDesired_;
@@ -80,6 +87,8 @@ private:
     matrix_t arm_j_, arm_dj_;
     matrix_t base_j_, base_dj_;
 
+    vector_t g_;
+
     // Task Parameters:
     vector_t legTorqueLimits_, armTorqueLimits_;
     scalar_t frictionCoeff_{}, swingKp_{}, swingKd_{};
@@ -87,13 +96,17 @@ private:
     scalar_t baseHeightKp_{}, baseHeightKd_{};
     scalar_t baseAngularKp_{}, baseAngularKd_{};
     scalar_t baseLinearKp_{}, baseLinearKd_{};
+
     matrix_t jointKp_, jointKd_;
+
     matrix_t armEeLinearKp_{}, armEeLinearKd_{};
     matrix_t armEeAngularKp_{}, armEeAngularKd_{};
 
-    // Debug
-    vector3_t d_ee_, da_ee_;
+    size_t armEeFrameIdx_{};
+
+    ros::Publisher ee_pub_;
     ros::Publisher desiredPub_, measurePub_;
+    scalar_t last_time_;
 };
 
 template <typename T>

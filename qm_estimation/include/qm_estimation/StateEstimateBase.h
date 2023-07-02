@@ -11,6 +11,7 @@
 #include <geometry_msgs/PoseWithCovarianceStamped.h>
 #include <nav_msgs/Odometry.h>
 #include <realtime_tools/realtime_publisher.h>
+#include <tf2_ros/transform_broadcaster.h>
 
 #include <qm_common/hardware_interface/ContactSensorInterface.h>
 #include <qm_common/hardware_interface/HybridJointInterface.h>
@@ -19,6 +20,7 @@
 #include <ocs2_legged_robot/common/Types.h>
 #include <ocs2_legged_robot/gait/MotionPhaseDefinition.h>
 #include <ocs2_pinocchio_interface/PinocchioEndEffectorKinematics.h>
+
 
 namespace qm{
 using namespace ocs2;
@@ -45,6 +47,7 @@ protected:
     void updateArmEE(); // TODO: new
     void publishMsgs(const nav_msgs::Odometry& odom);
 
+
     PinocchioInterface pinocchioInterface_;
     CentroidalModelInfo info_;
     std::unique_ptr<PinocchioEndEffectorKinematics> eeKinematics_;
@@ -61,6 +64,7 @@ protected:
     size_t generalizedCoordinatesNum_;
     vector_t rbdState_;
 
+    tf2_ros::TransformBroadcaster tfBroadcaster_;
     std::shared_ptr<realtime_tools::RealtimePublisher<nav_msgs::Odometry>> odomPub_;
     std::shared_ptr<realtime_tools::RealtimePublisher<geometry_msgs::PoseWithCovarianceStamped>> posePub_;
     ros::Time lastPub_;

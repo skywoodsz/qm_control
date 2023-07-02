@@ -1,0 +1,16 @@
+<launch>
+
+    <arg name="kinova_robotType" default="j2n6s300"/>
+
+    <param name="qm_description" command="$(find xacro)/xacro $(find qm_description)/urdf/qudraputed_manipulator/robot.xacro
+    "/>
+    <param name="robot_description" command="$(find xacro)/xacro $(find qm_description)/urdf/qudraputed_manipulator/robot.xacro
+    "/>
+    <param name="legged_robot_description" command="$(find xacro)/xacro $(find qm_description)/urdf/qudraputed_manipulator/robot.xacro
+    "/>
+
+    <rosparam file="$(find qm_hw)/config/aliengo.yaml" command="load"/>
+    <rosparam file="$(find qm_hw)/config/robot_parameters.yaml" command="load"/>
+    <node name="qm_hw" pkg="qm_hw" type="qm_hw" respawn="false" clear_params="true"/>
+
+</launch>

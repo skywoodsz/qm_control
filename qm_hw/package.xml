@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>qm_hw</name>
+  <version>1.0.0</version>
+  <description>ROS control warped interface for Quadruped manipulator</description>
+
+  <maintainer email="skywoodsz@gmail.com">skywoodsz</maintainer>
+  <license>BSD3</license>
+  <author email="skywoodszcn@gmail.com">skywoodsz</author>
+
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <build_depend>cmake_clang_tools</build_depend>
+  <depend>roscpp</depend>
+  <depend>qm_common</depend>
+  <depend>qm_msgs</depend>
+  <depend>controller_manager</depend>
+  <depend>urdf</depend>
+  <depend>kinova_driver</depend>
+  <depend>kinova_msgs</depend>
+
+  <depend>ocs2_core</depend>
+
+
+</package>

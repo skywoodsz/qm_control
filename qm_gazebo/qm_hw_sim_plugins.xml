@@ -8,7 +8,7 @@
     </class>
 
     <class
-        name="qm_gazebo/QMMpcHwSim" type="qm::QMMpcHwSim"
+        name="qm_gazebo/DogHwSim" type="qm::DogHwSim"
         base_class_type="gazebo_ros_control::RobotHWSim">
         <description>
             The quadruped robot simulation interface which constructs joint handles from an SDF/URDF.

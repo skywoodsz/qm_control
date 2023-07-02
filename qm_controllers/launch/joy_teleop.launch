@@ -11,7 +11,6 @@
     </node>
 
     <rosparam file="$(arg teleop_config)" command="load"/>
-    <node pkg="joy_teleop" type="joy_teleop.py" name="joy_teleop">
-    </node>
+    <node pkg="joy_teleop" type="joy_teleop.py" name="joy_teleop"/>
 
 </launch>

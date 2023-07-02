@@ -8,12 +8,12 @@ find_package(catkin REQUIRED
         qm_common
         qm_interface
         qm_estimation
-        qm_wbc
-        qm_msgs
         controller_interface
         ocs2_legged_robot_ros
         angles
         dynamic_reconfigure
+        qm_msgs
+        qm_wbc
         )
 
 find_package(PkgConfig REQUIRED)
@@ -34,12 +34,13 @@ catkin_package(
             qm_common
             qm_interface
             qm_estimation
-            qm_wbc
-            qm_msgs
             controller_interface
             ocs2_legged_robot_ros
             angles
             dynamic_reconfigure
+            qm_msgs
+            ocs2_legged_robot_ros
+            qm_wbc
         DEPENDS
             pinocchio
 )
@@ -60,9 +61,10 @@ link_directories(
         ${pinocchio_LIBRARY_DIRS}
 )
 
-# Declare a cpp library
+## Declare a cpp library
 add_library(${PROJECT_NAME}
         src/QMController.cpp
+        src/Integrator.cpp
         )
 add_dependencies(${PROJECT_NAME}
         ${catkin_EXPORTED_TARGETS}
@@ -91,9 +93,6 @@ target_link_libraries(qm_target_trajectories_publisher
      ${catkin_LIBRARIES}
      )
 target_compile_options(qm_target_trajectories_publisher PRIVATE ${OCS2_CXX_FLAGS})
-
-
-
 
 
 
