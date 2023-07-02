@@ -90,8 +90,9 @@ mon launch qm_controllers load_controller_mpc.launch
 
 You can use the gamepad to control the quadruped base and the manipulator's end-effector, respectively.
 The schematic diagram of the gamepad is as follows:
-
-![joy](./docs/joy.png)
+<p align = "center">
+<img src="./docs/joy.png" alt="joy" width = "500"/>
+</p>
 
 ## End-effector stability testing
 <p align = "center">
