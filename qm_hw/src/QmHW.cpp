@@ -53,9 +53,6 @@ bool QmHW::init(ros::NodeHandle &root_nh, ros::NodeHandle &robot_hw_nh) {
     // Init for Kinova
     KinovaInit();
 
-    readTimer_.reset();
-    writeTimer_.reset();
-
     imuStatePub_.reset(
             new realtime_tools::RealtimePublisher<sensor_msgs::Imu>(root_nh, "/imu_data", 1));
     motorStatePub_.reset(
@@ -87,15 +84,6 @@ void QmHW::stop() {
         handle.setVelocityDesired(0.);
         handle.setKd(3.);
     }
-
-    std::cerr << "########################################################################";
-    std::cerr << "\n### Read Benchmarking";
-    std::cerr << "\n###   Maximum : " << readTimer_.getMaxIntervalInMilliseconds() << "[ms].";
-    std::cerr << "\n###   Average : " << readTimer_.getAverageInMilliseconds() << "[ms]." << std::endl;
-    std::cerr << "########################################################################";
-    std::cerr << "\n### Write Benchmarking";
-    std::cerr << "\n###   Maximum : " << writeTimer_.getMaxIntervalInMilliseconds() << "[ms].";
-    std::cerr << "\n###   Average : " << writeTimer_.getAverageInMilliseconds() << "[ms].";
 }
 
 bool QmHW::KinovaInit() {
@@ -251,9 +239,7 @@ void QmHW::read(const ros::Time &time, const ros::Duration &period) {
     // TODO: high resolution clock
     if(last_kinova_state_time_ + ros::Duration(1.0 / 100.0) < time)
     {
-        readTimer_.startTimer();
         KinovaStateRead();
-        readTimer_.endTimer();
         last_kinova_state_time_ = time;
     }
 
@@ -267,7 +253,7 @@ void QmHW::read(const ros::Time &time, const ros::Duration &period) {
     }
 
     // Debug
-    publishState(time);
+    // publishState(time);
 }
 
 void QmHW::write(const ros::Time &time, const ros::Duration &period) {
@@ -284,9 +270,7 @@ void QmHW::write(const ros::Time &time, const ros::Duration &period) {
     // TODO: high resolution clock
     if(last_kinova_cmd_time_ + ros::Duration(1.0 / 100.0) < time)
     {
-        writeTimer_.startTimer();
         KinovaCmdWrite();
-        writeTimer_.endTimer();
         last_kinova_cmd_time_ = time;
     }
 }

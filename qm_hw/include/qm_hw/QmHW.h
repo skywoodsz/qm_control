@@ -31,8 +31,6 @@
 // Kinova
 #include <kinova_driver/kinova_comm.h>
 
-#include <ocs2_core/misc/Benchmark.h>
-
 
 namespace qm{
 const std::vector<std::string> CONTACT_SENSOR_NAMES = {"RF_FOOT", "LF_FOOT", "RH_FOOT", "LH_FOOT"};
@@ -114,8 +112,6 @@ private:
     std::shared_ptr<realtime_tools::RealtimePublisher<qm_msgs::MotorState>> motorStatePub_;
     std::shared_ptr<realtime_tools::RealtimePublisher<sensor_msgs::Imu>> imuStatePub_;
     std::shared_ptr<realtime_tools::RealtimePublisher<geometry_msgs::WrenchStamped>> wrenchPub_;
-
-    ocs2::benchmark::RepeatedTimer readTimer_, writeTimer_;
 };
 
 }

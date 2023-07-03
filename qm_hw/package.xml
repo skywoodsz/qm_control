@@ -8,10 +8,8 @@
   <license>BSD3</license>
   <author email="skywoodszcn@gmail.com">skywoodsz</author>
 
-
   <buildtool_depend>catkin</buildtool_depend>
 
-  <build_depend>cmake_clang_tools</build_depend>
   <depend>roscpp</depend>
   <depend>qm_common</depend>
   <depend>qm_msgs</depend>
@@ -19,8 +17,5 @@
   <depend>urdf</depend>
   <depend>kinova_driver</depend>
   <depend>kinova_msgs</depend>
-
-  <depend>ocs2_core</depend>
-
 
 </package>

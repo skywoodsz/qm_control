@@ -3,15 +3,14 @@
 //
 
 #include <pinocchio/fwd.hpp>
-
-#include "qm_wbc/WbcBase.h"
-#include "qm_wbc/HoQp.h"
-
 #include <pinocchio/algorithm/centroidal.hpp>
 #include <pinocchio/algorithm/crba.hpp>
 #include <pinocchio/algorithm/frames.hpp>
 #include <pinocchio/algorithm/rnea.hpp>
 #include <utility>
+
+#include "qm_wbc/WbcBase.h"
+#include "qm_wbc/HoQp.h"
 
 #include <ocs2_msgs/mpc_observation.h>
 #include <ocs2_mpc/SystemObservation.h>
@@ -64,6 +63,8 @@ WbcBase::WbcBase(const ocs2::PinocchioInterface &pinocchioInterface, ocs2::Centr
     armEeLinearKd_ = matrix_t::Zero(3, 3);
     armEeAngularKp_ = matrix_t::Zero(3, 3);
     armEeAngularKd_ = matrix_t::Zero(3, 3);
+    d_ee_ = vector_t::Zero(3);
+    da_ee_ = vector_t::Zero(3);
 
     ros::NodeHandle nh;
     ee_pub_ = nh.advertise<nav_msgs::Odometry>("qm_wbc_ee", 1);
@@ -118,6 +119,10 @@ void WbcBase::dynamicCallback(qm_wbc::WbcWeightConfig &config, uint32_t) {
     armEeLinearKd_(1, 1) = config.kd_ee_linear_y;
     armEeLinearKd_(2, 2) = config.kd_ee_linear_z;
 
+    d_ee_(0) = config.d_ee_x;
+    d_ee_(1) = config.d_ee_y;
+    d_ee_(2) = config.d_ee_z;
+
     armEeAngularKp_(0, 0) = config.kp_ee_angular_x;
     armEeAngularKp_(1, 1) = config.kp_ee_angular_y;
     armEeAngularKp_(2, 2) = config.kp_ee_angular_z;
@@ -125,6 +130,10 @@ void WbcBase::dynamicCallback(qm_wbc::WbcWeightConfig &config, uint32_t) {
     armEeAngularKd_(0, 0) = config.kd_ee_angular_x;
     armEeAngularKd_(1, 1) = config.kd_ee_angular_y;
     armEeAngularKd_(2, 2) = config.kd_ee_angular_z;
+
+    da_ee_(0) = config.da_ee_z;
+    da_ee_(1) = config.da_ee_y;
+    da_ee_(2) = config.da_ee_x;
 
     ROS_INFO_STREAM("\033[32m Update the wbc param. \033[0m");
 }
@@ -472,7 +481,6 @@ Task WbcBase::formulateArmJointNomalTrackingTask()
     a.block(0, info_.generalizedCoordinatesNum-6, 6, 6) = matrix_t::Identity(6, 6);
 
     matrix_t jointKp, jointKd;
-    vector_t jointDesPos;
     jointKp = matrix_t::Zero(6, 6);
     jointKd = matrix_t::Zero(6, 6);
 
@@ -481,8 +489,10 @@ Task WbcBase::formulateArmJointNomalTrackingTask()
         jointKd(i, i) = jointKd_(i, i);
     }
 
-    b = jointKp * (qDesired_.segment<6>(info_.generalizedCoordinatesNum-6) - qMeasured_.segment<6>(info_.generalizedCoordinatesNum-6))
-        + jointKd* (- vMeasured_.segment<6>(info_.generalizedCoordinatesNum-6));
+   b = jointKp * (qDesired_.segment<6>(info_.generalizedCoordinatesNum-6)
+           - qMeasured_.segment<6>(info_.generalizedCoordinatesNum-6))
+       + jointKd * (vDesired_.segment<6>(info_.generalizedCoordinatesNum-6)
+               - vMeasured_.segment<6>(info_.generalizedCoordinatesNum-6));
 
     return {a, b, matrix_t(), vector_t()};
 }
@@ -529,78 +539,20 @@ Task WbcBase::formulateEeAngularMotionTrackingTask(){
     vector3_t armCurrentEeAngularVel = pinocchio::getFrameVelocity(Mmodel, Mdata, armEeFrameIdx_,
                                                                    pinocchio::LOCAL_WORLD_ALIGNED).angular();
 
-   // desired
-   const auto& Dmodel = pinocchioInterfaceDesired_.getModel();
-   auto& Ddata = pinocchioInterfaceDesired_.getData();
-   matrix3_t rotationEeReferenceToWorld = Ddata.oMf[armEeFrameIdx_].rotation();
-   vector3_t armDesiredEeAngularVel = pinocchio::getFrameVelocity(Dmodel, Ddata, armEeFrameIdx_,
-                                                  pinocchio::LOCAL_WORLD_ALIGNED).angular();
-
-    // error
-    vector3_t error = rotationErrorInWorld<scalar_t>(rotationEeReferenceToWorld, rotationEeMeasuredToWorld); //
-
-    a.block(0, 0, 3, info_.generalizedCoordinatesNum) = arm_j_.block(3, 0, 3, info_.generalizedCoordinatesNum);
-
-    b = armEeAngularKp_ * error + armEeAngularKd_ * (- armCurrentEeAngularVel)
-        - arm_dj_.block(3, 0, 3, info_.generalizedCoordinatesNum) * vMeasured_;
-
-    return {a, b, matrix_t(), vector_t()};
-}
-
-Task WbcBase::formulatejointDampTrackingTask()
-{
-    matrix_t a(6, numDecisionVars_);
-    vector_t b(a.rows());
-    a.setZero();
-    b.setZero();
-
-    scalar_t damp = 0.001;
-    a.block(0, info_.generalizedCoordinatesNum-6, 6, 6) = damp * matrix_t::Identity(6, 6);
-
-    return {a, b, matrix_t(), vector_t()};
-}
-
-Task WbcBase::formulateEeAngularMotionDampTrackingTask() {
-    matrix_t a(3, numDecisionVars_);
-    vector_t b(a.rows());
-    a.setZero();
-    b.setZero();
-
-    // measure
-    const auto& Mmodel = pinocchioInterfaceMeasured_.getModel();
-    auto& Mdata = pinocchioInterfaceMeasured_.getData();
-
-    matrix3_t rotationEeMeasuredToWorld = Mdata.oMf[armEeFrameIdx_].rotation();
-    vector3_t armCurrentEeAngularVel = pinocchio::getFrameVelocity(Mmodel, Mdata, armEeFrameIdx_,
-                                                                   pinocchio::LOCAL_WORLD_ALIGNED).angular();
-
     // desired
     const auto& Dmodel = pinocchioInterfaceDesired_.getModel();
     auto& Ddata = pinocchioInterfaceDesired_.getData();
     matrix3_t rotationEeReferenceToWorld = Ddata.oMf[armEeFrameIdx_].rotation();
     vector3_t armDesiredEeAngularVel = pinocchio::getFrameVelocity(Dmodel, Ddata, armEeFrameIdx_,
-                                                                   pinocchio::LOCAL_WORLD_ALIGNED).angular();
+                                                  pinocchio::LOCAL_WORLD_ALIGNED).angular();
+
     // error
-    vector3_t error = rotationErrorInWorld<scalar_t>(rotationEeReferenceToWorld, rotationEeMeasuredToWorld);
+    vector3_t error = rotationErrorInWorld<scalar_t>(rotationEeReferenceToWorld, rotationEeMeasuredToWorld); 
 
-    matrix_t arm_dj_tmp = matrix_t(6, info_.generalizedCoordinatesNum);
-    arm_dj_tmp.setZero();
-    arm_dj_tmp = arm_dj_;
-    arm_dj_tmp.block(0, 3, 3, 3).setZero();
+    a.block(0, 0, 3, info_.generalizedCoordinatesNum) = arm_j_.block(3, 0, 3, info_.generalizedCoordinatesNum);
 
-    Eigen::Matrix<scalar_t, 3, 6> ones;
-    ones.fill(1);
-    a.block(0, info_.generalizedCoordinatesNum-6, 3, 6) = ones;
-
-    DMat<double> arm_j_tmp, arm_j_inv;
-    arm_j_tmp.resize(3, info_.generalizedCoordinatesNum);
-    arm_j_tmp = arm_j_;
-
-    pseudoInverse(arm_j_tmp, 0.001, arm_j_inv);
-    arm_j_inv.resize(info_.generalizedCoordinatesNum, 3);
-
-    b = arm_j_inv * (armEeAngularKp_ * error + armEeAngularKd_ * (armDesiredEeAngularVel - armCurrentEeAngularVel)
-        - arm_dj_tmp.block(3, 0, 3, info_.generalizedCoordinatesNum) * vMeasured_);
+    b = armEeAngularKp_ * error + armEeAngularKd_ * (- armCurrentEeAngularVel)
+        - arm_dj_.block(3, 0, 3, info_.generalizedCoordinatesNum) * vMeasured_;
 
     return {a, b, matrix_t(), vector_t()};
 }
@@ -665,51 +617,10 @@ vector_t WbcBase::updateCmd(ocs2::vector_t x_optimal) {
     return cmd;
 }
 
-Task WbcBase::computeAccQP(const vector_t& tau, const vector_t& force) const{
-    matrix_t a(info_.generalizedCoordinatesNum, numDecisionVars_);
-    vector_t b(a.rows());
-    a.setZero();
-    b.setZero();
-
-    auto& data = pinocchioInterfaceMeasured_.getData();
-
-    matrix_t Mb, Jcb_T;
-    vector_t hb;
-    vector_t tau_augment(info_.generalizedCoordinatesNum);
-    tau_augment << Vector6::Zero(), tau;
-
-    Mb = data.M;
-    hb = data.nle;
-    Jcb_T = j_.transpose();
-
-    a << Mb, -Jcb_T;
-    b = -hb + tau_augment;
-
-    return {a, b, matrix_t(), matrix_t()};
-}
-
-vector_t WbcBase::computeAcc(const vector_t& tau, const vector_t& force){
-    const auto& model = pinocchioInterfaceMeasured_.getModel();
-    auto& data = pinocchioInterfaceMeasured_.getData();
-
-    pinocchio::container::aligned_vector<pinocchio::Force> fextDesired(model.njoints, pinocchio::Force::Zero());
-    for (size_t i = 0; i < info_.numThreeDofContacts; i++) {
-        const auto frameIndex = info_.endEffectorFrameIndices[i];
-        const auto jointIndex = model.frames[frameIndex].parent;
-        const Vector3 translationJointFrameToContactFrame = model.frames[frameIndex].placement.translation();
-        const Matrix3 rotationWorldFrameToJointFrame = data.oMi[jointIndex].rotation().transpose();
-        const Vector3 contactForce = rotationWorldFrameToJointFrame * force.segment<3>(3*i);
-        fextDesired[jointIndex].linear() = contactForce;
-        fextDesired[jointIndex].angular() = translationJointFrameToContactFrame.cross(contactForce);
-    }
-
-    return pinocchio::rnea(model, data, qMeasured_, vMeasured_, tau, fextDesired);
-}
-
 void WbcBase::loadTasksSetting(const std::string &taskFile, bool verbose) {
     // Load task file
     legTorqueLimits_ = vector_t(3);
-    loadData::loadEigenMatrix(taskFile, "torqueLimitsTask", legTorqueLimits_);
+    legTorqueLimits_ = pinocchioInterfaceMeasured_.getModel().effortLimit.segment<3>(6);
 
     // arm torque limit
     armTorqueLimits_ = vector_t(6);
@@ -735,15 +646,6 @@ void WbcBase::loadTasksSetting(const std::string &taskFile, bool verbose) {
     if (verbose) {
         std::cerr << " #### =============================================================================\n";
     }
-
-    prefix = "swingLegTask.";
-    if (verbose) {
-        std::cerr << "\n #### Swing Leg Task:";
-        std::cerr << "\n #### =============================================================================\n";
-    }
-    loadData::loadPtreeValue(pt, swingKp_, prefix + "kp", verbose);
-    loadData::loadPtreeValue(pt, swingKd_, prefix + "kd", verbose);
-
 }
 
 }

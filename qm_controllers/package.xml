@@ -9,15 +9,14 @@
 
   <buildtool_depend>catkin</buildtool_depend>
 
-  <build_depend>cmake_clang_tools</build_depend>
 
   <depend>roscpp</depend>
 
   <depend>qm_common</depend>
-  <depend>qm_wbc</depend>
   <depend>qm_interface</depend>
   <depend>qm_estimation</depend>
   <depend>qm_msgs</depend>
+  <depend>qm_wbc</depend>
 
   <depend>controller_interface</depend>
 

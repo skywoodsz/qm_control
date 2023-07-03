@@ -1,4 +1,4 @@
-centroidalModelType             1      // 0: FullCentroidalDynamics, 1: Single Rigid Body Dynamics
+centroidalModelType             0      // 0: FullCentroidalDynamics, 1: Single Rigid Body Dynamics
 
 qm_interface
 {
@@ -12,7 +12,7 @@ model_settings
 
   verboseCppAd                  true
   recompileLibrariesCppAd       false ;
-  modelFolderCppAd              /tmp/qm_real
+  modelFolderCppAd              /tmp/qm
 
   ; base frame of the robot (from URDF)
   baseFrame                       "base_link"
@@ -199,15 +199,15 @@ Q
   (2,2)   100.0    ; vcom_z
   (3,3)   10.0     ; L_x / robotMass
   (4,4)   30.0     ; L_y / robotMass
-  (5,5)   100.0     ; L_z / robotMass 
+  (5,5)   100.0     ; L_z / robotMass ;  need to tune
 
   ;; Base Pose: [position, orientation] ;;
-  (6,6)   1000.0   ; p_base_x 
+  (6,6)   1000.0   ; p_base_x 1000
   (7,7)   1000.0   ; p_base_y
-  (8,8)   8000.0   ; p_base_z 
-  (9,9)   1000.0    ; theta_base_z 
-  (10,10) 2000.0    ; theta_base_y 
-  (11,11) 2000.0    ; theta_base_x 
+  (8,8)   8000.0   ; p_base_z 8000
+  (9,9)   1000.0    ; theta_base_z 1000
+  (10,10) 2000.0    ; theta_base_y ;2000
+  (11,11) 2000.0    ; theta_base_x ; 2000
 
   ;; Leg Joint Positions: [LF, LH, RF, RH] ;;
   (12,12) 5.0     ; LF_HAA
@@ -234,8 +234,8 @@ Q
 
 endEffector
 {
-  muPosition      2500.0 ; 
-  muOrientation    1000.0 ; 
+  muPosition      2500.0 ; 2500
+  muOrientation    1000.0 ; 1000
 }
 
 finalEndEffector

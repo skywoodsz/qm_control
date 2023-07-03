@@ -1,7 +1,6 @@
 //
 // Created by skywoodsz on 2023/6/15.
 //
-// ref from: https://github.com/qiayuanliao/legged_control
 
 #ifndef SRC_LINEARKALMANFILTER_H
 #define SRC_LINEARKALMANFILTER_H

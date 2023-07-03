@@ -163,11 +163,14 @@ void QMController::update(const ros::Time &time, const ros::Duration &period) {
     vector_t x = wbc_->update(optimizedState, optimizedInput, measuredRbdState_, plannedMode, period.toSec(), currentObservation_.time);
     wbcTimer_.endTimer();
     vector_t torque = x.tail(18);
-    vector_t q_ddot = x.segment<6>(18);
-
+    
+    // vector_t q_ddot = x.segment<6>(18);
 //    arm_qdot_intergrator_.Integrate(q_ddot, period.toSec());
 //    vector_t arm_q_dot = vector_t::Zero(6);
 //    arm_q_dot = arm_qdot_intergrator_.GetIntegral();
+//
+//    std::cout<<"arm_q_dot: "<<arm_q_dot.transpose()<<std::endl;
+//    std::cout<<"q_ddot: "<<q_ddot.transpose()<<std::endl;
 
     // id control
     // vector_t joint_acc = vector_t::Zero(qmInterface_->getCentroidalModelInfo().actuatedDofNum);
@@ -191,12 +194,11 @@ void QMController::update(const ros::Time &time, const ros::Duration &period) {
         }
     }
 
-
     // Arm torque
     if(arm_control_)
     {
-        for (size_t j = 12; j < 18; ++j) { 
-            hybridJointHandles_[j].setCommand(posDes(j), velDes(j), arm_kp_wbc_, arm_kd_wbc_, 0.0);
+        for (size_t j = 12; j < 18; ++j) {
+        hybridJointHandles_[j].setCommand(posDes(j), velDes(j), arm_kp_wbc_, arm_kd_wbc_, 0.0);
         }
     }
 

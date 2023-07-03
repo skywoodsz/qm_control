@@ -9,12 +9,12 @@
 
     <buildtool_depend>catkin</buildtool_depend>
 
-    <build_depend>cmake_clang_tools</build_depend>
     <depend>roscpp</depend>
     <depend>ocs2_legged_robot</depend>
+    <depend>ocs2_msgs</depend>
+    <depend>ocs2_ros_interfaces</depend>
     <depend>pinocchio</depend>
     <depend>qm_common</depend>
     <depend>qm_msgs</depend>
-    <depend>ocs2_ros_interfaces</depend>
     <depend>qpoases_catkin</depend>
 </package>

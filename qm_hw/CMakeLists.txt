@@ -10,7 +10,6 @@ find_package(catkin REQUIRED
         urdf
         kinova_driver
         kinova_msgs
-        ocs2_core
         )
 
 catkin_package(
@@ -26,7 +25,6 @@ catkin_package(
         urdf
         kinova_driver
         kinova_msgs
-        ocs2_core
 )
 
 ###########

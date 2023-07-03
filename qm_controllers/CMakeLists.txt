@@ -93,6 +93,3 @@ target_link_libraries(qm_target_trajectories_publisher
      ${catkin_LIBRARIES}
      )
 target_compile_options(qm_target_trajectories_publisher PRIVATE ${OCS2_CXX_FLAGS})
-
-
-

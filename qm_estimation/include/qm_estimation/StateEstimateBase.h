@@ -44,7 +44,7 @@ public:
 protected:
     void updateAngular(const vector3_t& zyx, const vector_t& angularVel);
     void updateLinear(const vector_t& pos, const vector_t& linearVel);
-    void updateArmEE(); // TODO: new
+    void updateArmEE(); 
     void publishMsgs(const nav_msgs::Odometry& odom);
 
 
