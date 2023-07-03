@@ -1,4 +1,4 @@
-centroidalModelType             0      // 0: FullCentroidalDynamics, 1: Single Rigid Body Dynamics
+centroidalModelType             1      // 0: FullCentroidalDynamics, 1: Single Rigid Body Dynamics
 
 qm_interface
 {
@@ -12,7 +12,7 @@ model_settings
 
   verboseCppAd                  true
   recompileLibrariesCppAd       false ;
-  modelFolderCppAd              /tmp/qm
+  modelFolderCppAd              /tmp/qm_real
 
   ; base frame of the robot (from URDF)
   baseFrame                       "base_link"

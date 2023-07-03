@@ -42,7 +42,7 @@ mon launch qm_controllers rviz.launch
 
 ## Bugs & Feature Requesityts
 
-The project is still in the early stages of development and we welcome feedback.  Please report bugs and request features using the [Issue Tracker](https://github.com/skywoodsz/qm_control/issues) or Email skywoodszcn@gmail.com
+This project is still in the early stages of development and we welcome feedback.  Please report bugs and request features using the [Issue Tracker](https://github.com/skywoodsz/qm_control/issues) or Email skywoodszcn@gmail.com
 
 ## TODO
 
