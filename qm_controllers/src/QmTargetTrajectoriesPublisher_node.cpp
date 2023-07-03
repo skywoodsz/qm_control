@@ -132,15 +132,16 @@ TargetTrajectories EeCmdVelToTargetTrajectories(const vector_t& cmdVel,
         target = EeCurrentPose;
         target(0) = EeCurrentPose(0) + cmdVelRot(0) * timeToTarget;
         target(1) = EeCurrentPose(1) + cmdVelRot(1) * timeToTarget;
-        target(2) = EeCurrentPose(2) + cmdVelRot(2) * timeToTarget;
+        // target(2) = EeCurrentPose(2) + cmdVelRot(2) * timeToTarget;
+        target(2) = lastEeTarget(2);
         target(3) = lastEeTarget(3);
         target(4) = lastEeTarget(4);
         target(5) = lastEeTarget(5);
         target(6) = lastEeTarget(6);
 
         // Heigh limit
-        if(target(2) - COM_HEIGHT > 0.52)
-            target(2) = COM_HEIGHT + 0.52;
+        // if(target(2) - COM_HEIGHT > 0.52)
+        //     target(2) = COM_HEIGHT + 0.52;
 
         return target;
     }();
