@@ -2,7 +2,7 @@
 
 ## Overview
 
-The branch considers the influence of the **force** on the end effector and requires a **ft sensor** to measure the force.
+The branch considers the influence of the **force** on the end-effector and requires a **ft sensor** to measure the force.
 
 ## Usage
 
@@ -31,6 +31,14 @@ After the manipulator is initialized, commands can be sent
 roslaunch qm_controllers load_qm_target.launch 
 # rviz
 mon launch qm_controllers rviz.launch
+```
+
+## External force test
+
+You can call the service to apply external force to the end-effector for 3 seconds to apply force {x: 0.0, y: 0.0, z: 30}.
+
+```
+rosservice call /gazebo/apply_body_wrench '{body_name: "qm::ft_sensor", reference_frame: "qm::ft_sensor", wrench: { force: { x: 0, y: 0, z: 30.0 } }, start_time: 0, duration: {secs: 3} }'
 ```
 
 ## Bugs & Feature Requesityts
