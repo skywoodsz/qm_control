@@ -31,8 +31,6 @@ After the manipulator is initialized, commands can be sent
 roslaunch qm_controllers load_qm_target.launch 
 # rviz
 mon launch qm_controllers rviz.launch
-# joy
-mon launch qm_controllers joy_teleop.launch
 ```
 
 ## Bugs & Feature Requesityts
