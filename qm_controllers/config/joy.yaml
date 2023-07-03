@@ -26,9 +26,6 @@ teleop:
       - axis: 1
         target: linear.x
         scale: 0.5
-      - axis: 7
-        target: linear.z
-        scale: 0.1
       - axis: 4
         target: linear.z
         scale: 0.1
