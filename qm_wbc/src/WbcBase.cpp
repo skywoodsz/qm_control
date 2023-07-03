@@ -58,7 +58,6 @@ WbcBase::WbcBase(const ocs2::PinocchioInterface &pinocchioInterface, ocs2::Centr
 
     jointKp_ = matrix_t::Zero(6, 6);
     jointKd_ = matrix_t::Zero(6, 6);
-    d_arm_ = vector_t::Zero(6);
 
     armEeLinearKp_ = matrix_t::Zero(3, 3);
     armEeLinearKd_ = matrix_t::Zero(3, 3);
@@ -66,9 +65,6 @@ WbcBase::WbcBase(const ocs2::PinocchioInterface &pinocchioInterface, ocs2::Centr
     armEeAngularKd_ = matrix_t::Zero(3, 3);
     d_ee_ = vector_t::Zero(3);
     da_ee_ = vector_t::Zero(3);
-
-    zyx2xyz_.setZero();
-    zyx2xyz_ << 0., 0., 1., 0., 1., 0., 1., 0., 0.;
 
     ros::NodeHandle nh;
     ee_pub_ = nh.advertise<nav_msgs::Odometry>("qm_wbc_ee", 1);
@@ -98,12 +94,6 @@ void WbcBase::dynamicCallback(qm_wbc::WbcWeightConfig &config, uint32_t) {
     jointKd_(4, 4) = config.kd_arm_joint_5;
     jointKd_(5, 5) = config.kd_arm_joint_6;
 
-    d_arm_(0) = config.d_arm_1;
-    d_arm_(1) = config.d_arm_2;
-    d_arm_(2) = config.d_arm_3;
-    d_arm_(3) = config.d_arm_4;
-    d_arm_(4) = config.d_arm_5;
-    d_arm_(5) = config.d_arm_6;
 
     // ee linear
     armEeLinearKp_(0, 0) = config.kp_ee_linear_x;
@@ -131,6 +121,9 @@ void WbcBase::dynamicCallback(qm_wbc::WbcWeightConfig &config, uint32_t) {
     da_ee_(2) = config.da_ee_x;
 
     // base
+    swingKp_ = config.kp_swing;
+    swingKd_ = config.kd_swing;
+
     baseHeightKp_ = config.baseHeightKp;
     baseHeightKd_ = config.baseHeightKd;
 
@@ -153,11 +146,11 @@ vector_t WbcBase::update(const ocs2::vector_t &stateDesired, const ocs2::vector_
     updateMeasured(rbdStateMeasured);
     updateDesired(stateDesired, inputDesired, period);
 
-    if(time - last_time_ > ros::Duration(0.01).toSec())
-    {
-        publishMsg();
-        last_time_ = time;
-    }
+    // if(time - last_time_ > ros::Duration(0.01).toSec())
+    // {
+    //     publishMsg();
+    //     last_time_ = time;
+    // }
 
     return {};
 }
@@ -496,15 +489,12 @@ Task WbcBase::formulateArmJointNomalTrackingTask()
     a.block(0, info_.generalizedCoordinatesNum-6, 6, 6) = matrix_t::Identity(6, 6);
 
     matrix_t jointKp, jointKd;
-    vector_t jointDesPos;
     jointKp = matrix_t::Zero(6, 6);
     jointKd = matrix_t::Zero(6, 6);
-    jointDesPos = vector_t::Zero(6, 6);
 
     for (int i = 0; i < 6; ++i) {
         jointKp(i, i) = jointKp_(i, i);
         jointKd(i, i) = jointKd_(i, i);
-        jointDesPos(i) = d_arm_(i);
     }
 
     b = jointKp * (qDesired_.segment<6>(info_.generalizedCoordinatesNum-6)
@@ -754,7 +744,7 @@ vector_t WbcBase::updateCmdWithEEForce(ocs2::vector_t x_optimal) {
 void WbcBase::loadTasksSetting(const std::string &taskFile, bool verbose) {
     // Load task file
     legTorqueLimits_ = vector_t(3);
-    loadData::loadEigenMatrix(taskFile, "torqueLimitsTask", legTorqueLimits_);
+    legTorqueLimits_ = pinocchioInterfaceMeasured_.getModel().effortLimit.segment<3>(6);
 
     // arm torque limit
     armTorqueLimits_ = vector_t(6);
@@ -781,15 +771,6 @@ void WbcBase::loadTasksSetting(const std::string &taskFile, bool verbose) {
         std::cerr << " #### =============================================================================\n";
     }
 
-    prefix = "swingLegTask.";
-    if (verbose) {
-        std::cerr << "\n #### Swing Leg Task:";
-        std::cerr << "\n #### =============================================================================\n";
-    }
-    loadData::loadPtreeValue(pt, swingKp_, prefix + "kp", verbose);
-    loadData::loadPtreeValue(pt, swingKd_, prefix + "kd", verbose);
-
 }
-
 }
 

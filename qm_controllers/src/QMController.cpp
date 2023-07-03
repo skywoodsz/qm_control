@@ -7,8 +7,10 @@
 #include <pinocchio/algorithm/jacobian.hpp>
 
 #include "qm_controllers/QMController.h"
-#include "qm_common/math_tool/mathConvert.h"
 #include <qm_wbc/HierarchicalWbc.h>
+#include <qm_interface/common/SharedValue.h>
+#include <qm_estimation/FromTopiceEstimate.h>
+#include <qm_estimation/FromArmTopicEstimate.h>
 
 #include <ocs2_centroidal_model/AccessHelperFunctions.h>
 #include <ocs2_centroidal_model/CentroidalModelPinocchioMapping.h>
@@ -27,13 +29,9 @@
 #include <pinocchio/algorithm/rnea.hpp>
 
 #include <angles/angles.h>
-#include <qm_estimation/FromTopiceEstimate.h>
-#include <qm_estimation/FromArmTopicEstimate.h>
-
 #include <pluginlib/class_list_macros.hpp>
 
-#include <qm_common/debug_tool/dataIo.h>
-#include <qm_interface/common/SharedValue.h>
+
 
 
 namespace qm{
@@ -431,110 +429,6 @@ void QMController::dynamicCallback(qm_controllers::WeightConfig &config, uint32_
     arm_kd_wbc_ = config.kd_arm_wbc;
 }
 
-bool QMControllerDummyObserver::init(hardware_interface::RobotHW *robot_hw, ros::NodeHandle &controller_nh)
-{
-// Initialize OCS2
-    std::string urdfFile;
-    std::string taskFile;
-    std::string referenceFile;
-
-    controller_nh.getParam("/urdfFile", urdfFile);
-    controller_nh.getParam("/taskFile", taskFile);
-    controller_nh.getParam("/referenceFile", referenceFile);
-
-    bool verbose = false;
-    loadData::loadCppDataType(taskFile, "qm_interface.verbose", verbose);
-
-    setupInterface(taskFile, urdfFile, referenceFile, verbose);
-    setupMpc(controller_nh);
-    setupMrt();
-
-    CentroidalModelPinocchioMapping pinocchioMapping(qmInterface_->getCentroidalModelInfo());
-    eeKinematicsPtr_ = std::make_shared<PinocchioEndEffectorKinematics>(qmInterface_->getPinocchioInterface(), pinocchioMapping,
-                                                                        qmInterface_->modelSettings().contactNames3DoF);
-
-    std::vector<std::string> eeName{qmInterface_->modelSettings().info.eeFrame};
-    armEeKinematicsPtr_ = std::make_shared<PinocchioEndEffectorKinematics>(qmInterface_->getPinocchioInterface(), pinocchioMapping,
-                                                                           eeName);
-
-    // visualize
-    ros::NodeHandle nh;
-    robotVisualizer_ = std::make_shared<QmVisualizer>(qmInterface_->getPinocchioInterface(),
-                                                      qmInterface_->getCentroidalModelInfo(),
-                                                      qmInterface_->modelSettings(),
-                                                      *eeKinematicsPtr_,
-                                                      *armEeKinematicsPtr_,
-                                                      nh);
-
-
-    return true;
-
-}
-
-void QMControllerDummyObserver::starting(const ros::Time &time) {
-    currentObservation_.mode = ModeNumber::STANCE;
-    vector_t rbdState = qmInterface_->getInitialState();
-    currentObservation_.state = rbdState;
-    currentObservation_.input.setZero(qmInterface_->getCentroidalModelInfo().inputDim);
-
-    vector_t EeInitTarget(7), initTarget(qmInterface_->getInitialState().size() + 7);
-    EeInitTarget.head(3) << 0.52, 0.09, 0.38 + rbdState[8];
-    EeInitTarget.tail(4) << Eigen::Quaternion<scalar_t>(-0.5, 0.5, -0.5, 0.5).coeffs();
-
-    initTarget << rbdState, EeInitTarget;
-
-    TargetTrajectories target_trajectories({currentObservation_.time}, {initTarget}, {currentObservation_.input});
-
-    // Set the first observation and command and wait for optimization to finish
-    mpcMrtInterface_->setCurrentObservation(currentObservation_);
-    mpcMrtInterface_->getReferenceManager().setTargetTrajectories(target_trajectories);
-    ROS_INFO_STREAM("\033[32m Waiting for the initial policy ... \033[0m");
-    while (!mpcMrtInterface_->initialPolicyReceived() && ros::ok()) {
-        mpcMrtInterface_->advanceMpc();
-        ros::WallRate(qmInterface_->mpcSettings().mrtDesiredFrequency_).sleep();
-    }
-    ROS_INFO_STREAM("\033[32m Initial policy has been received. \033[0m");
-
-    optimizedState_ = rbdState;
-    optimizedInput_.setZero(qmInterface_->getCentroidalModelInfo().inputDim);
-
-    mpcRunning_ = true;
-}
-
-void QMControllerDummyObserver::update(const ros::Time &time, const ros::Duration &period) {
-    // State Estimate
-    currentObservation_.time += period.toSec();
-    currentObservation_.state = optimizedState_;
-    // TODO: mode
-    currentObservation_.mode = ModeNumber::STANCE;
-
-    // Update the current state of the system
-    mpcMrtInterface_->setCurrentObservation(currentObservation_);
-
-    // Load the latest MPC policy
-    mpcMrtInterface_->updatePolicy();
-
-    // Evaluate the current policy
-    vector_t optimizedState;
-    vector_t optimizedInput;
-    size_t plannedMode = 0;  // The mode that is active at the time the policy is evaluated at.
-    mpcMrtInterface_->evaluatePolicy(currentObservation_.time, currentObservation_.state, optimizedState, optimizedInput, plannedMode);
-
-    // Whole body control
-    currentObservation_.input = optimizedInput;
-
-    optimizedState_ = optimizedState;
-    optimizedInput_ = optimizedInput;
-
-    // Visualization
-    robotVisualizer_->update(currentObservation_, mpcMrtInterface_->getPolicy(), mpcMrtInterface_->getCommand());
-
-    // Publish the observation. Only needed for the command interface
-    observationPublisher_.publish(ros_msg_conversions::createObservationMsg(currentObservation_));
-    vector_t ee_state(7); armEeState(ee_state);
-    eeStatePublisher_.publish(createEeStateMsg(currentObservation_.time, ee_state));
-}
-
 void QMController::armEeState(vector_t& ee_state)
 {
     armEeKinematicsPtr_->setPinocchioInterface(qmInterface_->getPinocchioInterface());
@@ -741,5 +635,4 @@ void QMControllerManipulator::update(const ros::Time &time, const ros::Duration 
 } // namespace qm
 
 PLUGINLIB_EXPORT_CLASS(qm::QMController, controller_interface::ControllerBase)
-PLUGINLIB_EXPORT_CLASS(qm::QMControllerDummyObserver, controller_interface::ControllerBase)
 PLUGINLIB_EXPORT_CLASS(qm::QMControllerManipulator, controller_interface::ControllerBase)

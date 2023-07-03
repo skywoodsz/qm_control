@@ -96,15 +96,12 @@ private:
     scalar_t baseAngularKp_{}, baseAngularKd_{};
 
     matrix_t jointKp_, jointKd_;
-    vector_t d_arm_;
 
     matrix_t armEeLinearKp_{}, armEeLinearKd_{};
     matrix_t armEeAngularKp_{}, armEeAngularKd_{};
     vector_t d_ee_, da_ee_;
 
     size_t armEeFrameIdx_{};
-
-    Eigen::Matrix3d zyx2xyz_;
 
     ros::Publisher ee_pub_;
     scalar_t last_time_;

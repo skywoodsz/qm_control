@@ -4,7 +4,5 @@ controllers:
     publish_rate: 100
   qm_controller:
     type: qm/QMController
-  qm_controller_dummy:
-    type: qm/QMControllerDummyObserver
   qm_controller_arm:
     type: qm/QMControllerManipulator

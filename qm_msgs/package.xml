@@ -5,8 +5,8 @@
   <description>The qm message definitions</description>
 
   <maintainer email="skywoodszcn@gmail.com">skywoodsz</maintainer>
-
   <license>BSD3</license>
+  <author email="skywoodszcn@gmail.com">skywoodsz</author>
   
   <buildtool_depend>catkin</buildtool_depend>
   <build_depend>message_generation</build_depend>

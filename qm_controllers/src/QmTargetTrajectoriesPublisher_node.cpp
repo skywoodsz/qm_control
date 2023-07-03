@@ -3,7 +3,7 @@
 //
 
 #include "qm_controllers/QmTargetTrajectoriesPublisher.h"
-#include "qm_common/math_tool/mathConvert.h"
+#include "qm_controllers/GaitJoyPublisher.h"
 
 #include <ocs2_core/misc/LoadData.h>
 #include <ocs2_robotic_tools/common/RotationTransforms.h>
@@ -71,8 +71,7 @@ TargetTrajectories targetPoseToTargetTrajectories(const vector_t& EeTargetPose,
  * publish dog traj.
  */
 TargetTrajectories cmdVelToTargetTrajectories(const vector_t& cmdVel,
-                                              const vector_t& lastEeTarget,
-                                              double& last_yaw_target,
+                                              vector_t& lastEeTarget,
                                               const SystemObservation& observation,
                                               const SystemObservation& eeState)
 {
@@ -83,16 +82,24 @@ TargetTrajectories cmdVelToTargetTrajectories(const vector_t& cmdVel,
     const scalar_t timeToTarget = TIME_TO_TARGET;
     const vector_t BaseTargetPose = [&]() {
         vector_t target(6);
-        target(0) = cmdVelRot(0) * timeToTarget; // BaseCurrenPose(0) + cmdVelRot(0) * timeToTarget
-        target(1) = cmdVelRot(1) * timeToTarget; // BaseCurrenPose(1) + cmdVelRot(1) * timeToTarget
+        target(0) = BaseCurrenPose(0) + cmdVelRot(0) * timeToTarget;
+        target(1) = BaseCurrenPose(1) + cmdVelRot(1) * timeToTarget;
         target(2) = COM_HEIGHT;
-        target(3) = cmdVel(3) * timeToTarget; // BaseCurrenPose(3) + cmdVel(3) * timeToTarget
+        target(3) = BaseCurrenPose(3) + cmdVel(3) * timeToTarget;
         target(4) = 0;
         target(5) = 0;
         return target;
     }();
 
-    const vector_t EeTargetPose = lastEeTarget.head(7);
+    const vector_t EeTargetPose = [&]() {
+        if((lastEeTarget.head(3) - eeState.state.head(3)).norm() > 0.1)
+            lastEeTarget.head(3) = eeState.state.head(3);
+
+        vector_t target(7);
+        target = lastEeTarget;
+        return target;
+    }();
+
     SystemObservation eeStateLast = eeState;
     eeStateLast.state = EeTargetPose;
 
@@ -103,6 +110,56 @@ TargetTrajectories cmdVelToTargetTrajectories(const vector_t& cmdVel,
     trajectories.stateTrajectory[1].head(3) = cmdVelRot;
 
     return trajectories;
+}
+
+/**
+ * publish ee traj.
+ */
+TargetTrajectories EeCmdVelToTargetTrajectories(const vector_t& cmdVel,
+                                                vector_t& lastEeTarget,
+                                                const SystemObservation& observation,
+                                                const SystemObservation& eeState) {
+    // current pose
+    const vector_t EeCurrentPose = eeState.state;
+    const vector_t BaseCurrenPose = observation.state.segment<6>(6);
+    const Eigen::Quaterniond quat_init(-0.5, 0.5, -0.5, 0.5);
+    const Eigen::Quaterniond quat(EeCurrentPose(6), EeCurrentPose(3), EeCurrentPose(4), EeCurrentPose(5));
+    vector_t cmdVelRot = quat.toRotationMatrix() * quat_init.toRotationMatrix().transpose() * cmdVel.head(3); // world frame
+
+    const scalar_t timeToTarget = TIME_TO_TARGET;
+    const vector_t EeTargetPose =  [&](){
+        vector_t target(7);
+        target = EeCurrentPose;
+        target(0) = EeCurrentPose(0) + cmdVelRot(0) * timeToTarget;
+        target(1) = EeCurrentPose(1) + cmdVelRot(1) * timeToTarget;
+        target(2) = EeCurrentPose(2) + cmdVelRot(2) * timeToTarget;
+        target(3) = lastEeTarget(3);
+        target(4) = lastEeTarget(4);
+        target(5) = lastEeTarget(5);
+        target(6) = lastEeTarget(6);
+
+        // Heigh limit
+        if(target(2) - COM_HEIGHT > 0.52)
+            target(2) = COM_HEIGHT + 0.52;
+
+        return target;
+    }();
+
+    const vector_t BaseTargetPose = [&](){
+        vector_t target(6);
+        target = BaseCurrenPose;
+        target(0) = EeTargetPose(0) - 0.52;
+        target(1) = EeTargetPose(1) - 0.09;
+        target(2) = COM_HEIGHT;
+        target(4) = 0;
+        target(5) = 0;
+        return target;
+    }();
+
+    const scalar_t targetReachingTime = observation.time + timeToTarget;
+
+    // traj
+    return targetPoseToTargetTrajectories(EeTargetPose, BaseTargetPose, observation, eeState, targetReachingTime);
 }
 
 
@@ -122,11 +179,11 @@ TargetTrajectories EEgoalPoseToTargetTrajectories(const Eigen::Vector3d& positio
     const vector_t BaseTargetPose = [&](){
         vector_t target(6);
         target.setZero();
-//        target = BaseCurrenPose;
+        target = BaseCurrenPose;
         target(0) = position(0) - 0.52;
         target(1) = position(1) - 0.09;
         target(2) = COM_HEIGHT;
-        target(4) = 0;
+        target(4) = 0.0;
         target(5) = 0;
         return target;
     }();
@@ -151,14 +208,17 @@ TargetTrajectories EEgoalPoseToTargetTrajectories(const Eigen::Vector3d& positio
 
 int main(int argc, char* argv[]) {
     const std::string robotName = "qm";
+    const std::string gaitName = "legged_robot";
 
     ::ros::init(argc, argv, robotName + "_target");
     ::ros::NodeHandle nodeHandle;
     // Get node parameters
     std::string referenceFile;
     std::string taskFile;
+    std::string gaitCommandFile;
     nodeHandle.getParam("/referenceFile", referenceFile);
     nodeHandle.getParam("/taskFile", taskFile);
+    nodeHandle.getParam("/gaitCommandFile", gaitCommandFile);
 
     loadData::loadCppDataType(referenceFile, "comHeight", COM_HEIGHT);
     loadData::loadEigenMatrix(referenceFile, "defaultJointState", DEFAULT_JOINT_STATE);
@@ -168,7 +228,10 @@ int main(int argc, char* argv[]) {
 
     QmTargetTrajectoriesInteractiveMarker targetPoseCommand(nodeHandle, robotName,
                                                             &EEgoalPoseToTargetTrajectories,
-                                                            &cmdVelToTargetTrajectories);
+                                                            &cmdVelToTargetTrajectories,
+                                                            &EeCmdVelToTargetTrajectories);
+
+    GaitJoyPublisher gaitCommand(nodeHandle, gaitCommandFile, gaitName, false);
 
     ros::spin();
     // Successful exit

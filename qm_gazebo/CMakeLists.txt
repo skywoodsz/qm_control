@@ -1,8 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 project(qm_gazebo)
 
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-
 ## Find catkin macros and libraries
 find_package(catkin REQUIRED
         COMPONENTS
@@ -46,41 +44,4 @@ add_dependencies(qm_hw_sim
 target_link_libraries(qm_hw_sim
         ${catkin_LIBRARIES}
         ${GAZEBO_LIBRARIES}
-        )
-
-#########################
-###   CLANG TOOLING   ###
-#########################
-find_package(cmake_clang_tools QUIET)
-if (cmake_clang_tools_FOUND)
-    message(STATUS "Run clang tooling for target legged_hw_sim")
-    add_clang_tooling(
-            TARGETS legged_hw_sim
-            SOURCE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/src ${CMAKE_CURRENT_SOURCE_DIR}/include
-            CT_HEADER_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/include
-            CF_WERROR
-    )
-endif (cmake_clang_tools_FOUND)
-
-#############
-## Install ##
-#############
-
-install(TARGETS qm_hw_sim
-        ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-        LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-        RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-        )
-
-install(DIRECTORY include/${PROJECT_NAME}/
-        DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
-        FILES_MATCHING PATTERN "*.h"
-        )
-
-install(FILES qm_hw_sim_plugins.xml
-        DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
-        )
-
-install(DIRECTORY config
-        DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
         )

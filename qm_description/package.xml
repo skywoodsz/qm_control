@@ -3,10 +3,9 @@
   <name>qm_description</name>
   <version>1.0.0</version>
   <description>The qm urdf description package</description>
-
   <maintainer email="skywoodsz@gmail.com">skywoodsz</maintainer>
-
   <license>BSD3</license>
+  <author email="skywoodszcn@gmail.com">skywoodsz</author>
 
   <buildtool_depend>catkin</buildtool_depend>
   

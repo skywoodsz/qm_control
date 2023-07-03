@@ -7,13 +7,6 @@
         </description>
     </class>
 
-    <class name="qm/QMControllerDummyObserver" type="qm::QMControllerDummyObserver"
-           base_class_type="controller_interface::ControllerBase">
-        <description>
-            The dummy qm controller.
-        </description>
-    </class>
-
     <class name="qm/QMControllerManipulator" type="qm::QMControllerManipulator"
            base_class_type="controller_interface::ControllerBase">
         <description>

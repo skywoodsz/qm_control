@@ -4,15 +4,16 @@
     <version>1.0.0</version>
     <description>Qm whole body control</description>
     <maintainer email="skywoodszcn@gmail.com">skywoodsz</maintainer>
-
     <license>BSD3</license>
+    <author email="skywoodszcn@gmail.com">skywoodsz</author>
 
     <buildtool_depend>catkin</buildtool_depend>
-
-    <build_depend>cmake_clang_tools</build_depend>
+    
     <depend>roscpp</depend>
     <depend>ocs2_legged_robot</depend>
     <depend>pinocchio</depend>
     <depend>qm_common</depend>
     <depend>qm_msgs</depend>
+    <depend>ocs2_ros_interfaces</depend>
+    <depend>qpoases_catkin</depend>
 </package>
