@@ -7,7 +7,7 @@
 <img src="./docs/202306291554 00_01_03-00_01_19~2.gif" width = "400"  />
 </p>
 
-**Video Links:** [YouTube](https://www.youtube.com/channel/UCRsGxiYkqGvwHsZz1F8rHug), [bilibili](https://space.bilibili.com/3289375) (for China).
+**Video Links:** [YouTube](https://youtu.be/JCn5obOh4D8), [bilibili](https://www.bilibili.com/video/BV1uP411v7Ab) (for China).
 
 ## Overview
 
