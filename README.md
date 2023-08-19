@@ -1,11 +1,13 @@
 # qm_control
 
-<p align = "center">
-<img src="./docs/position_cmd.gif"  width = "400"/>
-<img src="./docs/chicken_hand.gif"  width = "400"/>
-<img src="./docs/202306191701 00_00_33-00_00_48.gif" width = "400" />
-<img src="./docs/202306291554 00_01_03-00_01_19~2.gif" width = "400"  />
-</p>
+<table><tr>
+<td><img src="./docs/position_cmd.gif"  width = "400"/></td>
+<td><img src="./docs/chicken_hand.gif"  width = "400"/></td>
+</tr></table> 
+<table><tr>
+<td><img src="./docs/202306191701 00_00_33-00_00_48.gif" width = "400" /></td>
+<td><img src="./docs/202306291554 00_01_03-00_01_19~2.gif" width = "400"  /></td>
+</tr></table> 
 
 **Video Links:** [YouTube](https://youtu.be/JCn5obOh4D8), [bilibili](https://www.bilibili.com/video/BV1uP411v7Ab) (for China).
 
@@ -98,10 +100,11 @@ The schematic diagram of the gamepad is as follows:
 </p>
 
 ## End-effector stability testing in simulation
-<p align = "center">
-<img src="./docs/position_err.png"  width = "400"/>
-<img src="./docs/angle_err.png"  width = "400"/>
-</p>
+
+<table><tr>
+<td><img src="./docs/position_err.png"  width = "400"/></td>
+<td><img src="./docs/angle_err.png"  width = "400"/></td>
+</tr></table> 
 
 ***Analysis***: The motion of the base and end-effector pose  w.r.t. the initial pose when the end-effector is controlled to remain at a fixed pose during locomotion. While the base travels 30 cm, the end-effector’s deviation from its initial position is at most 3.5 mm and 2.6 degree.
 
