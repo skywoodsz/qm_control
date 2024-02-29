@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>qm_control</name>
+  <version>1.0.0</version>
+  <description>Metapackage for qm control</description>
+  <maintainer email="skywoodszcn@gmail.com">skywoodsz</maintainer>
+  <license>BSD3</license>
+  <author email="skywoodszcn@gmail.com">skywoodsz</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <exec_depend>qm_common</exec_depend>
+  <exec_depend>qm_controllers</exec_depend>
+  <exec_depend>qm_description</exec_depend>
+  <exec_depend>qm_estimation</exec_depend>
+  <exec_depend>qm_gazebo</exec_depend>
+  <exec_depend>qm_interface</exec_depend>
+  <exec_depend>qm_msgs</exec_depend>
+  <exec_depend>qm_wbc</exec_depend>
+  <exec_depend>qpoases_catkin</exec_depend>
+
+   <export>
+   	  <metapackage />
+   </export>
+
+</package>
