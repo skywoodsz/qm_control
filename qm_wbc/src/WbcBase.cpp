@@ -57,13 +57,8 @@ WbcBase::WbcBase(const ocs2::PinocchioInterface &pinocchioInterface, ocs2::Centr
     armEeLinearKd_ = matrix_t::Zero(3, 3);
     armEeAngularKp_ = matrix_t::Zero(3, 3);
     armEeAngularKd_ = matrix_t::Zero(3, 3);
-    d_ee_ = vector3_t::Zero();
-    da_ee_ = vector3_t::Zero();
 
     ros::NodeHandle nh_weight = ros::NodeHandle(controller_nh, "wbc");
-    desiredPub_ = nh_weight.advertise<ocs2_msgs::mpc_observation>("/qm_wbc_desired", 1);
-    measurePub_ = nh_weight.advertise<ocs2_msgs::mpc_observation>("/qm_wbc_measure", 1);
-
     dynamic_srv_ = std::make_shared<dynamic_reconfigure::Server<qm_wbc::WbcWeightConfig>>(nh_weight);
     dynamic_reconfigure::Server<qm_wbc::WbcWeightConfig>::CallbackType cb = [this](auto&& PH1, auto&& PH2) {
         dynamicCallback(std::forward<decltype(PH1)>(PH1), std::forward<decltype(PH2)>(PH2));
@@ -104,7 +99,7 @@ void WbcBase::dynamicCallback(qm_wbc::WbcWeightConfig &config, uint32_t) {
     armEeAngularKd_(1, 1) = config.kd_ee_angular_y;
     armEeAngularKd_(2, 2) = config.kd_ee_angular_z;
 
-    // Dog
+    // base
     swingKp_ = config.kp_swing;
     swingKd_ = config.kd_swing;
 
@@ -116,10 +111,6 @@ void WbcBase::dynamicCallback(qm_wbc::WbcWeightConfig &config, uint32_t) {
 
     baseLinearKp_ = config.kp_base_linear;
     baseLinearKd_ = config.kd_base_linear;
-
-    // Debug
-    d_ee_ << config.d_ee_x, config.d_ee_y, config.d_ee_z;
-    da_ee_ << config.da_ee_z, config.da_ee_y, config.da_ee_x;
 
     ROS_INFO_STREAM("\033[32m Update the wbc param. \033[0m");
 }
@@ -137,30 +128,7 @@ vector_t WbcBase::update(const ocs2::vector_t &stateDesired, const ocs2::vector_
     updateMeasured(rbdStateMeasured);
     updateDesired(stateDesired, inputDesired, period);
 
-    // Debug
-    // publishMsg(time);
-
     return {};
-}
-
-void WbcBase::publishMsg(scalar_t time) {
-    SystemObservation desiredState, measureState;
-    desiredState.mode = 0;
-    desiredState.time = time;
-    desiredState.state.resize(qDesired_.size());
-    desiredState.input.resize(vDesired_.size());
-    desiredState.state = qDesired_;
-    desiredState.input = vDesired_;
-
-    measureState.mode = 0;
-    measureState.time = time;
-    measureState.state.resize(qMeasured_.size());
-    measureState.input.resize(vMeasured_.size());
-    measureState.state = qMeasured_;
-    measureState.input = vMeasured_;
-
-    desiredPub_.publish(ros_msg_conversions::createObservationMsg(desiredState));
-    measurePub_.publish(ros_msg_conversions::createObservationMsg(measureState));
 }
 
 void WbcBase::updateMeasured(const ocs2::vector_t &rbdStateMeasured) {
@@ -515,10 +483,8 @@ Task WbcBase::formulateEeLinearMotionTrackingTask() {
     vector3_t linear_acc = armEeLinearKp_ * (posDesired[0] - posMeasured[0])
             + armEeLinearKd_ * (velDesired[0] - velMeasured[0]);
 
-//    vector3_t linear_acc = armEeLinearKp_ * (d_ee_ - posMeasured[0])
-//                           + armEeLinearKd_ * (- velMeasured[0]);
-
-    a.block(0, 0, 3, info_.generalizedCoordinatesNum) = arm_j_.block(0, 0, 3, info_.generalizedCoordinatesNum);
+    a.block(0, 0, 3, info_.generalizedCoordinatesNum) =
+            arm_j_.block(0, 0, 3, info_.generalizedCoordinatesNum);
 
     b = linear_acc - arm_dj_.block(0, 0, 3, info_.generalizedCoordinatesNum) * vMeasured_;
 
@@ -546,10 +512,6 @@ Task WbcBase::formulateEeAngularMotionTrackingTask(){
     vector3_t armDesiredEeAngularVel = pinocchio::getFrameVelocity(Dmodel, Ddata, armEeFrameIdx_,
                                                    pinocchio::LOCAL_WORLD_ALIGNED).angular();
 
-//    vector3_t eularAngle = vector3_t::Zero();
-//    eularAngle << da_ee_(0), da_ee_(1), da_ee_(2);
-//    matrix3_t rotationEeReferenceToWorld = getRotationMatrixFromZyxEulerAngles<scalar_t>(eularAngle);
-
     // error
     vector3_t error = rotationErrorInWorld<scalar_t>(rotationEeReferenceToWorld, rotationEeMeasuredToWorld);
 
@@ -558,15 +520,12 @@ Task WbcBase::formulateEeAngularMotionTrackingTask(){
     arm_dj_tmp = arm_dj_;
     arm_dj_tmp.block(3, 3, 3, 3).setZero();
 
-    a.block(0, 0, 3, info_.generalizedCoordinatesNum) = arm_j_.block(3, 0, 3, info_.generalizedCoordinatesNum);
+    a.block(0, 0, 3, info_.generalizedCoordinatesNum) =
+            arm_j_.block(3, 0, 3, info_.generalizedCoordinatesNum);
     a.block(0, 3, 3, 3).setZero();
-
-//    b = armEeAngularKp_ * error + armEeAngularKd_ * (armDesiredEeAngularVel - armCurrentEeAngularVel)
-//        - arm_dj_tmp.block(3, 0, 3, info_.generalizedCoordinatesNum) * vMeasured_;
 
     b = armEeAngularKp_ * error + armEeAngularKd_ * (- armCurrentEeAngularVel)
         - arm_dj_tmp.block(3, 0, 3, info_.generalizedCoordinatesNum) * vMeasured_;
-
 
     return {a, b, matrix_t(), vector_t()};
 }

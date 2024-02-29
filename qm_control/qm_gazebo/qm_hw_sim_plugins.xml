@@ -1,0 +1,17 @@
+<library path="lib/libqm_hw_sim">
+    <class
+            name="qm_gazebo/QMHWSim" type="qm::QMHWSim"
+            base_class_type="gazebo_ros_control::RobotHWSim">
+        <description>
+            The quadruped manipulator simulation interface which constructs joint handles from an SDF/URDF.
+        </description>
+    </class>
+
+    <class
+        name="qm_gazebo/QMMpcHwSim" type="qm::QMMpcHwSim"
+        base_class_type="gazebo_ros_control::RobotHWSim">
+        <description>
+            The quadruped robot simulation interface which constructs joint handles from an SDF/URDF.
+        </description>
+    </class>
+</library>

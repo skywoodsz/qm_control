@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<package format="2">
+    <name>qm_interface</name>
+    <version>1.0.0</version>
+    <description>Qm interface base on OCS2</description>
+    <maintainer email="skywoodszcn@gmail.com">skywoodsz</maintainer>
+    <license>BSD3</license>
+    <author email="skywoodszcn@gmail.com">skywoodsz</author>
+
+    <buildtool_depend>catkin</buildtool_depend>
+
+    <depend>roscpp</depend>
+    <depend>tf</depend>
+    <depend>urdf</depend>
+    <depend>kdl_parser</depend>
+    <depend>robot_state_publisher</depend>
+    <depend>ocs2_legged_robot</depend>
+    <depend>ocs2_ros_interfaces</depend>
+    <depend>ocs2_self_collision</depend>
+    <depend>pinocchio</depend>
+
+</package>

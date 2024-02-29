@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package format="2">
+    <name>qm_common</name>
+    <version>1.0.0</version>
+    <description>The qm_common package</description>
+
+    <maintainer email="skywoodszcn@gmail.com">skywoodsz</maintainer>
+    <license>BSD3</license>
+    <author email="skywoodszcn@gmail.com">skywoodsz</author>
+
+
+    <buildtool_depend>catkin</buildtool_depend>
+
+    <depend>roscpp</depend>
+    <depend>hardware_interface</depend>
+
+</package>

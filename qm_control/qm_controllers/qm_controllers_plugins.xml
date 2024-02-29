@@ -1,0 +1,16 @@
+<library path="lib/libqm_controllers">
+
+    <class name="qm/QMController" type="qm::QMController"
+           base_class_type="controller_interface::ControllerBase">
+        <description>
+            The qm mpc amd wbc controller.
+        </description>
+    </class>
+
+    <class name="qm/QMMpcController" type="qm::QMMpcController"
+           base_class_type="controller_interface::ControllerBase">
+        <description>
+            The qm mpc controller.
+        </description>
+    </class>
+</library>

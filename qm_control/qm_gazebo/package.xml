@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<package format="2">
+    <name>qm_gazebo</name>
+    <version>1.0.0</version>
+    <description>The qm_gazebo package</description>
+    <maintainer email="skywoodszcn@gmail.com">skywoodsz</maintainer>
+    <license>BSD3</license>
+    <author email="skywoodszcn@gmail.com">skywoodsz</author>
+
+    <buildtool_depend>catkin</buildtool_depend>
+
+    <depend>roscpp</depend>
+    <depend>qm_common</depend>
+    <depend>gazebo_dev</depend>
+    <depend>gazebo_ros_control</depend>
+
+    <export>
+        <gazebo_ros_control plugin="${prefix}/qm_hw_sim_plugins.xml"/>
+        <gazebo_ros gazebo_model_path="${prefix}/.."/>
+    </export>
+</package>

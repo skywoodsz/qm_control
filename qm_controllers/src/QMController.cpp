@@ -147,7 +147,7 @@ void QMController::update(const ros::Time &time, const ros::Duration &period) {
     wbcTimer_.endTimer();
     vector_t torque = x.tail(18);
 
-    // id control
+    // inverce dynamic control
 //    vector_t joint_acc = vector_t::Zero(qmInterface_->getCentroidalModelInfo().actuatedDofNum);
 //    vector_t z = rbdConversions_->computeRbdTorqueFromCentroidalModel(optimizedState, optimizedInput, joint_acc);
 //    vector_t torque_id = z.segment<12>(6);

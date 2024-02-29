@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>qm_controllers</name>
+  <version>1.0.0</version>
+  <description>The qm_controllers package</description>
+  <maintainer email="skywoodszcn@gmail.com">skywoodsz</maintainer>
+  <license>BSD3</license>
+  <author email="skywoodszcn@gmail.com">skywoodsz</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <depend>roscpp</depend>
+
+  <depend>qm_common</depend>
+  <depend>qm_wbc</depend>
+  <depend>qm_interface</depend>
+  <depend>qm_estimation</depend>
+  <depend>qm_msgs</depend>
+
+  <depend>controller_interface</depend>
+
+  <depend>ocs2_legged_robot_ros</depend>
+
+  <depend>angles</depend>
+  <depend>dynamic_reconfigure</depend>
+
+  <exec_depend>controller_manager</exec_depend>
+  
+  <export>
+    <controller_interface plugin="${prefix}/qm_controllers_plugins.xml"/>
+  </export>
+
+</package>  

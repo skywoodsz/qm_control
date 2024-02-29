@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package format="2">
+    <name>qm_estimation</name>
+    <version>1.0.0</version>
+    <description>The legged_estimation package</description>
+    <maintainer email="skywoodszcn@gmail.com">skywoodsz</maintainer>
+    <license>BSD3</license>
+    <author email="skywoodszcn@gmail.com">skywoodsz</author>
+
+    <buildtool_depend>catkin</buildtool_depend>
+
+    <depend>roscpp</depend>
+    <depend>ocs2_legged_robot</depend>
+    <depend>qm_common</depend>
+    <depend>realtime_tools</depend>
+    <depend>tf2_ros</depend>
+
+</package>
