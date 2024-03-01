@@ -4,7 +4,7 @@
 
 The branch considers **force disturbance** on the manipulator's end-effector and requires an **ft sensor** to measure the force.
 
-![force](./docs/force.gif #pic_center)
+<div align=center><img src="./docs/force.gif"></div>
 
 ## Usage
 
