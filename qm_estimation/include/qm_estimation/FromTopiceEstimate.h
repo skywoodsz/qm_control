@@ -18,11 +18,7 @@ using namespace legged_robot;
 class FromTopicStateEstimate : public StateEstimateBase {
 public:
     FromTopicStateEstimate(PinocchioInterface pinocchioInterface, CentroidalModelInfo info,
-                           const PinocchioEndEffectorKinematics& eeKinematics,
-                           const PinocchioEndEffectorKinematics& armEeKinematics,
-                           const std::vector<HybridJointHandle>& hybridJointHandles,
-                           const std::vector<ContactSensorHandle>& contactSensorHandles,
-                           const hardware_interface::ImuSensorHandle& imuSensorHandle);
+                           const PinocchioEndEffectorKinematics& eeKinematics, const PinocchioEndEffectorKinematics& armEeKinematics);
 
     vector_t update(const ros::Time& time, const ros::Duration& period) override;
 

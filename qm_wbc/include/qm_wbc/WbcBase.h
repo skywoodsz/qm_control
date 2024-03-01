@@ -54,8 +54,6 @@ protected:
     Task formulateArmJointNomalTrackingTask();
     Task formulateEeLinearMotionTrackingTask();
     Task formulateEeAngularMotionTrackingTask();
-    Task formulateEeAngularMotionDampTrackingTask();
-    Task formulatejointDampTrackingTask();
 
     Task formulateContactForceTask(const vector_t& inputDesired) const;
 
@@ -63,12 +61,8 @@ protected:
     Task formulateFloatingBaseEomWithEEForceTask();
     Task formulateTorqueLimitsTaskWithEEForceTask();
     vector_t updateCmdWithEEForce(vector_t x_optimal);
-
 private:
     void dynamicCallback(qm_wbc::WbcWeightConfig& config, uint32_t /*level*/);
-    void publishMsg();
-
-    std::shared_ptr<dynamic_reconfigure::Server<qm_wbc::WbcWeightConfig>> dynamic_srv_{};
 
     size_t numDecisionVars_;
     PinocchioInterface pinocchioInterfaceMeasured_, pinocchioInterfaceDesired_;
@@ -89,66 +83,16 @@ private:
     vector_t eeForce_;
 
     // Task Parameters:
+    std::shared_ptr<dynamic_reconfigure::Server<qm_wbc::WbcWeightConfig>> dynamic_srv_{};
     vector_t legTorqueLimits_, armTorqueLimits_;
     scalar_t frictionCoeff_{}, swingKp_{}, swingKd_{};
-
     scalar_t baseHeightKp_{}, baseHeightKd_{};
     scalar_t baseAngularKp_{}, baseAngularKd_{};
-
     matrix_t jointKp_, jointKd_;
-
     matrix_t armEeLinearKp_{}, armEeLinearKd_{};
     matrix_t armEeAngularKp_{}, armEeAngularKd_{};
-    vector_t d_ee_, da_ee_;
-
     size_t armEeFrameIdx_{};
-
-    ros::Publisher ee_pub_;
-    scalar_t last_time_;
 };
-
-template <typename T>
-using DMat = typename Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic>;
-/*!
- * Compute the pseudo inverse of a matrix
- * @param matrix : input matrix
- * @param sigmaThreshold : threshold for singular values being zero
- * @param invMatrix : output matrix
- */
-template <typename T>
-void pseudoInverse(DMat<T> const& matrix, double sigmaThreshold, DMat<T>& invMatrix)
-{
-    if ((1 == matrix.rows()) && (1 == matrix.cols())) {
-        invMatrix.resize(1, 1);
-        if (matrix.coeff(0, 0) > sigmaThreshold) {
-            invMatrix.coeffRef(0, 0) = 1.0 / matrix.coeff(0, 0);
-        }
-        else {
-            invMatrix.coeffRef(0, 0) = 0.0;
-        }
-        return;
-    }
-
-    Eigen::JacobiSVD<DMat<T>> svd(matrix, Eigen::ComputeThinU | Eigen::ComputeThinV);
-    // not sure if we need to svd.sort()... probably not
-    int const nrows(svd.singularValues().rows());
-    DMat<T> invS;
-    invS = DMat<T>::Zero(nrows, nrows);
-    for (int ii(0); ii < nrows; ++ii)
-    {
-        if (svd.singularValues().coeff(ii) > sigmaThreshold) {
-            invS.coeffRef(ii, ii) = 1.0 / svd.singularValues().coeff(ii);
-        }
-        else {
-            // invS.coeffRef(ii, ii) = 1.0/ sigmaThreshold;
-            // printf("sigular value is too small: %f\n",
-            // svd.singularValues().coeff(ii));
-        }
-    }
-    invMatrix = svd.matrixV() * invS * svd.matrixU().transpose();
 }
-
-}
-
 
 #endif //SRC_WBCBASE_H

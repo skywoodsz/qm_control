@@ -45,7 +45,6 @@ link_directories(
 add_library(${PROJECT_NAME}
         src/StateEstimateBase.cpp
         src/FromTopiceEstimate.cpp
-        src/FromArmTopicEstimate.cpp
         )
 
 target_link_libraries(${PROJECT_NAME}
