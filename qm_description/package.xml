@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>qm_description</name>
+  <version>1.0.0</version>
+  <description>The qm urdf description package</description>
+  <maintainer email="skywoodsz@gmail.com">skywoodsz</maintainer>
+  <license>BSD3</license>
+  <author email="skywoodszcn@gmail.com">skywoodsz</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  
+  <exec_depend>urdf</exec_depend>
+  <exec_depend>xacro</exec_depend>
+  <exec_depend>joint_state_publisher</exec_depend>
+  <exec_depend>robot_state_publisher</exec_depend>
+
+</package>

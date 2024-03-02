@@ -1,0 +1,8 @@
+<library path="lib/libqm_controllers">
+    <class name="qm/QMController" type="qm::QMController"
+           base_class_type="controller_interface::ControllerBase">
+        <description>
+            The basic qm controller.
+        </description>
+    </class>
+</library>
