@@ -17,9 +17,9 @@ qm_control is a controller for quadruped manipulators using model predictive con
 
 ***Notes:*** There are four branches focusing on different tasks.
 
--   Main branch focus on the whole-body motion and assumes no force acting on the manipulator's end-effector.
--   [feature-force](https://github.com/skywoodsz/qm_control/tree/feature-force) branch focus on keeping stability with force disturbance acting on the manipulator's end-effector.
--   [feature-compliance](https://github.com/skywoodsz/qm_control/tree/feature-compliance) branch focus on the whole-body compliance control.
+-   Main branch focuses on the whole-body motion and assumes no force acting on the manipulator's end-effector.
+-   [feature-force](https://github.com/skywoodsz/qm_control/tree/feature-force) branch focuses on keeping stability with force disturbance acting on the manipulator's end-effector.
+-   [feature-compliance](https://github.com/skywoodsz/qm_control/tree/feature-compliance) branch focuses on whole-body compliance control.
 -   [feature-real](https://github.com/skywoodsz/qm_control/tree/feature-real) branch implements the controller on hardware.
 
 ## Related Paper  
@@ -98,8 +98,7 @@ mon launch qm_controllers load_controller_mpc.launch
 
 ## Gamepad Control
 
-You can use the gamepad to control the quadruped base and the manipulator's end-effector, respectively.
-The schematic diagram of the gamepad is as follows:
+You can use the gamepad to control the quadruped base and the manipulator's end-effector, respectively. The schematic diagram of the gamepad is as follows:
 <p align = "center">
 <img src="./docs/gamepad.png" alt="gamepad" width = "500"/>
 </p>
@@ -110,12 +109,11 @@ The schematic diagram of the gamepad is as follows:
 <td><img src="./docs/position_err.png"  width = "400"/></td>
 <td><img src="./docs/angle_err.png"  width = "400"/></td>
 </tr></table> 
-
-***Analysis***: The motion of the base and end-effector pose  w.r.t. the initial pose when the end-effector is controlled to remain at a fixed pose during locomotion. While the base travels 30 cm, the end-effector’s deviation from its initial position is at most 3.5 mm and 2.6 degree.
+***Analysis***: The motion of the base and end-effector pose  w.r.t. the initial pose when the end-effector is controlled to remain at a fixed pose during locomotion. While the base travels 30 cm, the end-effector’s deviation from its initial position is at most 3.5 mm and 2.6 degrees.
 
 ## Bugs & Feature Requests
 
-The project is still in the early stages of development and we welcome feedback.  Please report bugs and request features using the [Issue Tracker](https://github.com/skywoodsz/qm_control/issues) or Email skywoodszcn@gmail.com
+The project is still in the early stages of development, and we welcome feedback.  Please report bugs and request features using the [Issue Tracker](https://github.com/skywoodsz/qm_control/issues) or Email skywoodszcn@gmail.com
 
 ## TODO
 
