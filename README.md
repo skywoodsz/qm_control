@@ -13,9 +13,14 @@
 
 ## Overview
 
-qm_control is a quadruped manipulator controller using model predictive control and whole body control. We aim to make the quadruped manipulator perform better in coordination and balance. **The project is still under development, not the final version**.
+qm_control is a controller for quadruped manipulators using model predictive control and whole-body control. The controller aims to make the quadruped manipulator more athletic. It has achieved tasks such as *whole-body planning*, *end-effector motion tracking*, *stability with force disturbance*, and *whole-body compliance control*. We will continue to develop more features for the controller. **The project is still under development, not the final version**.
 
-***Notes:*** The controller assumes that there is no force on the end effector. If force on the end effector needs to be considered, see the [feature-force](https://github.com/skywoodsz/qm_control/tree/feature-force) branch. The implement on the real robot hardware can see the branch [feature-real](https://github.com/skywoodsz/qm_control/tree/feature-real).
+***Notes:*** There are four branches focusing on different tasks.
+
+-   Main branch focus on the whole-body motion and assumes no force acting on the manipulator's end-effector.
+-   [feature-force](https://github.com/skywoodsz/qm_control/tree/feature-force) branch focus on keeping stability with force disturbance acting on the manipulator's end-effector.
+-   [feature-compliance](https://github.com/skywoodsz/qm_control/tree/feature-compliance) branch focus on the whole-body compliance control.
+-   [feature-real](https://github.com/skywoodsz/qm_control/tree/feature-real) branch implements the controller on hardware.
 
 ## Related Paper  
 To be soon.
@@ -108,12 +113,12 @@ The schematic diagram of the gamepad is as follows:
 
 ***Analysis***: The motion of the base and end-effector pose  w.r.t. the initial pose when the end-effector is controlled to remain at a fixed pose during locomotion. While the base travels 30 cm, the end-effector’s deviation from its initial position is at most 3.5 mm and 2.6 degree.
 
-## Bugs & Feature Requesityts
+## Bugs & Feature Requests
 
 The project is still in the early stages of development and we welcome feedback.  Please report bugs and request features using the [Issue Tracker](https://github.com/skywoodsz/qm_control/issues) or Email skywoodszcn@gmail.com
 
 ## TODO
 
 - [ ] Solve the singularity problem.
-- [ ] Add the foot trajectory plannning.
+- [ ] Add the foot trajectory planning.
 - [ ] Merge the branch feature-real to main.
