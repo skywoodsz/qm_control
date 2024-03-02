@@ -113,7 +113,7 @@ You can use the gamepad to control the quadruped base and the manipulator's end-
 
 ## Bugs & Feature Requests
 
-The project is still in the early stages of development, and we welcome feedback.  Please report bugs and request features using the [Issue Tracker](https://github.com/skywoodsz/qm_control/issues) or Email skywoodszcn@gmail.com
+The project is still in the early stages of development and we welcome feedback.  Please report bugs and request features using the [Issue Tracker](https://github.com/skywoodsz/qm_control/issues) or Email skywoodszcn@gmail.com
 
 ## TODO
 
