@@ -40,12 +40,6 @@ roslaunch qm_controllers load_qm_target.launch
 mon launch qm_controllers rviz.launch
 ```
 
-## Bugs & Feature Requesityts
+## Bugs & Feature Requests
 
 This project is still in the early stages of development and we welcome feedback.  Please report bugs and request features using the [Issue Tracker](https://github.com/skywoodsz/qm_control/issues) or Email skywoodszcn@gmail.com
-
-## TODO
-
-- [ ] Solve the singularity problem.
-- [ ] Add the foot trajectory plannning.
-- [ ] Merge branch feature-real to main.
