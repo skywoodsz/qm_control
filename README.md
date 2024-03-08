@@ -9,6 +9,8 @@ The branch makes the quadruped manipulator whole-body compliance with actuation 
 (Click to see)
 [![Watch the video](./docs/cover.jpg)](https://youtu.be/EUXxHV2ZGMQ)
 
+**Video Links:** [YouTube](https://youtu.be/EUXxHV2ZGMQ), [Bilibili](https://www.bilibili.com/video/BV1vi421d7rq) (for China).
+
 
 ## Usage
 
