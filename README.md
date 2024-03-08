@@ -8,16 +8,15 @@
 <td><img src="./docs/202306191701 00_00_33-00_00_48.gif" width = "400" /></td>
 <td><img src="./docs/202306291554 00_01_03-00_01_19~2.gif" width = "400"  /></td>
 </tr></table> 
-
-**Video Links:** [YouTube](https://youtu.be/JCn5obOh4D8), [bilibili](https://www.bilibili.com/video/BV1uP411v7Ab) (for China).
+**Video Links:** [YouTube](https://youtu.be/JCn5obOh4D8), [Bilibili](https://www.bilibili.com/video/BV1uP411v7Ab) (for China).
 
 ## Overview
 
 qm_control is a controller for quadruped manipulators using model predictive control and whole-body control. The controller aims to make the quadruped manipulator more athletic. It has achieved tasks such as *whole-body planning*, *end-effector motion tracking*, *stability with force disturbance*, and *whole-body compliance control*. We will continue to develop more features for the controller. **The project is still under development, not the final version**.
 
-***Notes:*** There are four branches focusing on different tasks.
+***Notes:*** Four branches focus on different tasks.
 
--   Main branch focuses on the whole-body motion and assumes no force acting on the manipulator's end-effector.
+-   The main branch focuses on the whole-body motion and assumes no force acting on the manipulator's end-effector.
 -   [feature-force](https://github.com/skywoodsz/qm_control/tree/feature-force) branch focuses on keeping stability with force disturbance acting on the manipulator's end-effector.
 -   [feature-compliance](https://github.com/skywoodsz/qm_control/tree/feature-compliance) branch focuses on whole-body compliance control.
 -   [feature-real](https://github.com/skywoodsz/qm_control/tree/feature-real) branch implements the controller on hardware.
@@ -47,7 +46,7 @@ catkin config -DCMAKE_BUILD_TYPE=RelWithDebInfo
 catkin build
 ```
 
-***Notes: Make sure OCS2 in the environment path.***
+***Notes: Make sure OCS2 is in the environment path.***
 
 ## Usage
 
@@ -109,7 +108,7 @@ You can use the gamepad to control the quadruped base and the manipulator's end-
 <td><img src="./docs/position_err.png"  width = "400"/></td>
 <td><img src="./docs/angle_err.png"  width = "400"/></td>
 </tr></table> 
-***Analysis***: The motion of the base and end-effector pose  w.r.t. the initial pose when the end-effector is controlled to remain at a fixed pose during locomotion. While the base travels 30 cm, the end-effector’s deviation from its initial position is at most 3.5 mm and 2.6 degrees.
+**Analysis**: The motion of the base and end-effector pose w.r.t. the initial pose when the end-effector is controlled to remain at a fixed pose during locomotion. While the base travels 30 cm, the end-effector’s deviation from its initial position is at most 3.5 mm and 2.6 degrees.
 
 ## Bugs & Feature Requests
 
@@ -119,4 +118,4 @@ The project is still in the early stages of development and we welcome feedback.
 
 - [ ] Solve the singularity problem.
 - [ ] Add the foot trajectory planning.
-- [ ] Merge the branch feature-real to main.
+- [ ] Merge the branch feature-real to the main.
