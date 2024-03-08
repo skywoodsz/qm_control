@@ -7,9 +7,9 @@ The branch ensures the quadruped manipulator's whole-body compliance under actua
 ## Video
 
 (Click to see)
-[![Watch the video](./docs/cover.jpg)](https://youtu.be/EUXxHV2ZGMQ)
+[![Watch the video](./docs/cover.jpg)](https://youtu.be/gK7PCxNsuZ8)
 
-***Video Links:*** [YouTube](https://youtu.be/EUXxHV2ZGMQ), [Bilibili](https://www.bilibili.com/video/BV1vi421d7rq) (for China).
+***Video Links:*** [YouTube](https://youtu.be/gK7PCxNsuZ8), [Bilibili](https://www.bilibili.com/video/BV1dy421e7PZ) (for China).
 
 
 ## Usage
