@@ -4,6 +4,12 @@
 
 The branch makes the quadruped manipulator whole-body compliance with actuation saturation. To be specific, in the case of non-saturation, the controller tracks user-set compliance. In case of saturation, it can avoid unsafe behaviors (e.g., slips, oscillations, and overshoots) caused by actuation saturation.
 
+## Video
+
+(Click to see)
+[![Watch the video](./docs/cover.jpg)](https://youtu.be/EUXxHV2ZGMQ)
+
+
 ## Usage
 
 Launch the simulation with:
