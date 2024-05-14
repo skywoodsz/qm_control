@@ -4,13 +4,15 @@
     <link name="ft_sensor">
         <visual>
             <geometry>
-                <cylinder radius="0.0375" length="0.01"/>
+                <!-- <cylinder radius="0.0375" length="0.01"/> -->
+                <box size="0.1 0.08 0.01"/>
             </geometry>
             <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
         </visual>
         <collision>
             <geometry>
-                <cylinder radius="0.0375" length="0.01"/>
+                <!-- <cylinder radius="0.0375" length="0.01"/> -->
+                <box size="0.1 0.08 0.01"/>
             </geometry>
             <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
         </collision>

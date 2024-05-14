@@ -35,6 +35,12 @@ roslaunch qm_controllers load_qm_target.launch
 mon launch qm_controllers rviz.launch
 ```
 
+## External force perception
+
+```
+rostopic echo /ft_sensor_topic
+```
+
 ## External force test
 
 You can call the service to apply external force $[30.0, 0.0, 0.0]^T$ to the end-effector for 3 seconds.

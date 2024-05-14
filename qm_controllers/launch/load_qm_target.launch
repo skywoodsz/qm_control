@@ -6,7 +6,7 @@
     <node pkg="ocs2_legged_robot_ros" type="legged_robot_gait_command" name="legged_robot_gait_command"
               output="screen"/>
 
-    <node pkg="qm_controllers" type="qm_target_trajectories_publisher" name="qm_target_trajectories_publisher"
+    <node pkg="qm_controllers" type="qm_target_trajectories_publisher2" name="qm_target_trajectories_publisher"
           output="screen"/>
 
 </launch>

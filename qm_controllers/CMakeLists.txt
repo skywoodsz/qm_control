@@ -91,3 +91,27 @@ target_link_libraries(qm_target_trajectories_publisher
      ${catkin_LIBRARIES}
      )
 target_compile_options(qm_target_trajectories_publisher PRIVATE ${OCS2_CXX_FLAGS})
+
+add_executable(qm_target_trajectories_publisher2
+     src/myQmTargetTrajPub.cpp
+     src/QmTargetTrajectoriesPublisher.cpp
+     src/GaitJoyPublisher.cpp
+     )
+add_dependencies(qm_target_trajectories_publisher2
+     ${catkin_EXPORTED_TARGETS}
+     )
+target_link_libraries(qm_target_trajectories_publisher2
+     ${catkin_LIBRARIES}
+     )
+target_compile_options(qm_target_trajectories_publisher2 PRIVATE ${OCS2_CXX_FLAGS})
+
+add_executable(door_push src/DoorPush.cpp)
+target_link_libraries(door_push ${catkin_LIBRARIES})
+add_dependencies(door_push
+        ${catkin_EXPORTED_TARGETS}
+        )
+add_executable(door_pull src/DoorPull.cpp)
+target_link_libraries(door_pull ${catkin_LIBRARIES})
+add_dependencies(door_pull
+        ${catkin_EXPORTED_TARGETS}
+        )

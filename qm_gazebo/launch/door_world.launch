@@ -1,5 +1,5 @@
 <launch>
-    <arg name="world" default="push_door"/>
+    <arg name="world" default="pull_door"/>
 
     <arg name="kinova_robotType" default="j2n6s300"/>
     <!-- load config file as same as empty_world.launch -->
@@ -33,14 +33,14 @@
           output="screen"
           args="-param qm_description -urdf -model qm
                   
-				-z 0.55
+				-z 0.5
 				-y 0.02
 				-J $(arg kinova_robotType)_joint_1 3.07
-				-J $(arg kinova_robotType)_joint_2 3.08
-				-J $(arg kinova_robotType)_joint_3 1.36
-				-J $(arg kinova_robotType)_joint_4 2.42
-				-J $(arg kinova_robotType)_joint_5 0.20
-				-J $(arg kinova_robotType)_joint_6 5.32
+				-J $(arg kinova_robotType)_joint_2 3.81
+				-J $(arg kinova_robotType)_joint_3 0.72
+				-J $(arg kinova_robotType)_joint_4 -3.80
+				-J $(arg kinova_robotType)_joint_5 1.86
+				-J $(arg kinova_robotType)_joint_6 -0.59
 				"
     />
 
