@@ -21,7 +21,7 @@ visualization_msgs::InteractiveMarker QmTargetTrajectoriesInteractiveMarker::cre
     interactiveMarker.description = "Right click to send command";
     interactiveMarker.pose.position.x = 0.52;
     interactiveMarker.pose.position.y = 0.09;
-    interactiveMarker.pose.position.z = 0.436;
+    interactiveMarker.pose.position.z = 0.7;
     interactiveMarker.pose.orientation.x = 0.5;
     interactiveMarker.pose.orientation.y = -0.5;
     interactiveMarker.pose.orientation.z = 0.5;

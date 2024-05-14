@@ -2,7 +2,7 @@
 
 <launch>
 
-    <arg name="urdfFile" default="$(find qm_description)/urdf/qudraputed_manipulator/robot.urdf"/>
+    <arg name="urdfFile" default="$(find qm_description)/urdf/quadruped_manipulator/robot.urdf"/>
     <arg name="taskFile" default="$(find qm_controllers)/config/task.info"/>
     <arg name="referenceFile" default="$(find qm_controllers)/config/reference.info"/>
     <arg name="gaitCommandFile" default="$(find qm_controllers)/config/gait.info"/>

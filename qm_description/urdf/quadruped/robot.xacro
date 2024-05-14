@@ -4,19 +4,19 @@
 
     <xacro:arg name="robot_type" default="aliengo"/>
 
-    <xacro:include filename="$(find qm_description)/urdf/qudraputed/common/materials.xacro"/>
-    <xacro:include filename="$(find qm_description)/urdf/qudraputed/common/leg.xacro"/>
-    <xacro:include filename="$(find qm_description)/urdf/qudraputed/common/gazebo.xacro"/>
-    <xacro:include filename="$(find qm_description)/urdf/qudraputed/common/imu.xacro"/>
+    <xacro:include filename="$(find qm_description)/urdf/quadruped/common/materials.xacro"/>
+    <xacro:include filename="$(find qm_description)/urdf/quadruped/common/leg.xacro"/>
+    <xacro:include filename="$(find qm_description)/urdf/quadruped/common/gazebo.xacro"/>
+    <xacro:include filename="$(find qm_description)/urdf/quadruped/common/imu.xacro"/>
 
-    <xacro:include filename="$(find qm_description)/urdf/qudraputed/$(arg robot_type)/const.xacro"/>
+    <xacro:include filename="$(find qm_description)/urdf/quadruped/$(arg robot_type)/const.xacro"/>
 
 
     <link name="base">
         <visual>
             <origin rpy="0 0 0" xyz="0 0 0"/>
             <geometry>
-                <mesh filename="package://qm_description/meshes/qudraputed/$(arg robot_type)/trunk.dae" scale="1 1 1"/>
+                <mesh filename="package://qm_description/meshes/quadruped/$(arg robot_type)/trunk.dae" scale="1 1 1"/>
             </geometry>
         </visual>
         <collision>
