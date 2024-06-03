@@ -23,7 +23,9 @@ qm_control is a controller for quadruped manipulators using model predictive con
 -   [feature-real](https://github.com/skywoodsz/qm_control/tree/feature-real) branch implements the controller on hardware.
 
 ## Related Paper  
-To be soon.
+[1] 张天霖. 基于视觉伺服与集值反馈的四足机械臂动态物体抓取研究[D]. 哈尔滨: 哈尔滨工业大学, 2024. (for China).
+*Notes: 可以通过**哈尔滨工业大学图书馆**和**深圳大学城图书馆**搜索查询。*
+[2] To be soon.
 
 ## Installation
 
