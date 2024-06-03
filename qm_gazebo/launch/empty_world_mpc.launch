@@ -2,11 +2,11 @@
     <arg name="kinova_robotType" default="j2n6s300"/>
     <rosparam file="$(find qm_gazebo)/config/default.yaml" command="load"/>
 
-    <param name="qm_description" command="$(find xacro)/xacro $(find qm_description)/urdf/quadruped_manipulator/robot_mpc.xacro
+    <param name="qm_description" command="$(find xacro)/xacro $(find qm_description)/urdf/qudraputed_manipulator/robot_mpc.xacro
     "/>
-    <param name="robot_description" command="$(find xacro)/xacro $(find qm_description)/urdf/quadruped_manipulator/robot_mpc.xacro
+    <param name="robot_description" command="$(find xacro)/xacro $(find qm_description)/urdf/qudraputed_manipulator/robot_mpc.xacro
     "/>
-    <param name="legged_robot_description" command="$(find xacro)/xacro $(find qm_description)/urdf/quadruped_manipulator/robot_mpc.xacro
+    <param name="legged_robot_description" command="$(find xacro)/xacro $(find qm_description)/urdf/qudraputed_manipulator/robot_mpc.xacro
     "/>
 
     <!-- We resume the logic in empty_world.launch, changing only the name of the world to be launched -->

@@ -4,26 +4,24 @@
     <link name="ft_sensor">
         <visual>
             <geometry>
-                <!-- <cylinder radius="0.0375" length="0.01"/> -->
-                <box size="0.1 0.08 0.01"/>
+                <cylinder radius="0.0375" length="0.01"/>
             </geometry>
             <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
         </visual>
-        <collision>
+        <!-- <collision>
             <geometry>
-                <!-- <cylinder radius="0.0375" length="0.01"/> -->
-                <box size="0.1 0.08 0.01"/>
+                <cylinder radius="0.0375" length="0.01"/>
             </geometry>
             <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
-        </collision>
+        </collision> -->
         <inertial>
             <mass value="0.0001"/>
-            <inertia ixx="10"
-                     ixy="10"
-                     ixz="10"
-                     iyy="10"
-                     iyz="10"
-                     izz="10"/>
+            <inertia ixx="3.5989583333333335E-8"
+                     ixy="0.0"
+                     ixz="0.0"
+                     iyy="3.5156250000041194E-8"
+                     iyz="0.0"
+                     izz="7.03125E-8"/>
         </inertial>
         <!-- <inertial>
             <mass value="0.01"/>

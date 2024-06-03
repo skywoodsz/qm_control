@@ -21,7 +21,7 @@ visualization_msgs::InteractiveMarker QmTargetTrajectoriesInteractiveMarker::cre
     interactiveMarker.description = "Right click to send command";
     interactiveMarker.pose.position.x = 0.52;
     interactiveMarker.pose.position.y = 0.09;
-    interactiveMarker.pose.position.z = 0.7;
+    interactiveMarker.pose.position.z = 0.436;
     interactiveMarker.pose.orientation.x = 0.5;
     interactiveMarker.pose.orientation.y = -0.5;
     interactiveMarker.pose.orientation.z = 0.5;
@@ -108,21 +108,6 @@ void QmTargetTrajectoriesInteractiveMarker::processFeedback(const visualization_
     lastEeTarget_ << EePosition, EeOrientation.coeffs();
 }
 
-void QmTargetTrajectoriesInteractiveMarker::markerCallback(const visualization_msgs::InteractiveMarkerFeedback::ConstPtr &msg) {
-    const Eigen::Vector3d EePosition(msg->pose.position.x, msg->pose.position.y, msg->pose.position.z);
-    const Eigen::Quaterniond EeOrientation(msg->pose.orientation.w, msg->pose.orientation.x,
-                                           msg->pose.orientation.y, msg->pose.orientation.z);
-
-    // get TargetTrajectories
-    const auto targetTrajectories = goalPoseToTargetTrajectories_(EePosition, EeOrientation,
-                                                                  latestObservation_, latestObservationEe_);
-
-    // publish TargetTrajectories
-    targetTrajectoriesPublisher_->publishTargetTrajectories(targetTrajectories);
-
-    // update last ee target
-    lastEeTarget_ << EePosition, EeOrientation.coeffs();
-}
 }
 
 
