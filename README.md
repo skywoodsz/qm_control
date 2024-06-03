@@ -2,7 +2,9 @@
 
 ## Overview
 
-The branch considers **force disturbance** on the end-effector and requires a **ft sensor** to measure the force.
+The branch considers **force disturbance** on the manipulator's end-effector and requires an **ft sensor** to measure the force.
+
+<div align=center><img src="./docs/force.gif"></div>
 
 ## Usage
 
@@ -41,6 +43,6 @@ You can call the service to apply external force $[x: 30.0, y: 0.0, z: 0.0]^T$ t
 rosservice call /gazebo/apply_body_wrench '{body_name: "qm::ft_sensor", reference_frame: "qm::ft_sensor", wrench: { force: { x: 30.0, y: 0, z: 0 } }, start_time: 0, duration: {secs: 1} }'
 ```
 
-## Bugs & Feature Requesityts
+## Bugs & Feature Requests
 
 This project is still in the early stages of development and we welcome feedback.  Please report bugs and request features using the [Issue Tracker](https://github.com/skywoodsz/qm_control/issues) or Email skywoodszcn@gmail.com
