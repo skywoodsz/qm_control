@@ -11,6 +11,36 @@ The branch ensures the quadruped manipulator's whole-body compliance under actua
 
 ***Video Links:*** [YouTube](https://youtu.be/gK7PCxNsuZ8), [Bilibili](https://www.bilibili.com/video/BV1dy421e7PZ) (for China).
 
+## Related Paper  
+
+- T. Zhang, F. Lin, X. Peng, X. Xiong, and Y. Lou. “Whole-body Compliance Control for Quadruped Manipulator with Actuation Saturation of Joint Torque and Ground Friction”, 2024 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS), Accepted.
+
+## Install
+
+### Install dependencies
+
+- [OCS2](https://leggedrobotics.github.io/ocs2/installation.html#prerequisites)
+- [ROS1-Noetic](http://wiki.ros.org/noetic)
+
+### Clone and Build
+
+```
+# Clone
+mkdir -p <catkin_ws_name>/src
+cd <catkin_ws_name>/src
+git clone https://github.com/skywoodsz/qm_control.git
+cd ./qm_control
+git checkout feature-compliance
+
+# Build
+cd <catkin_ws_name>
+catkin init
+catkin config -DCMAKE_BUILD_TYPE=RelWithDebInfo
+catkin build
+```
+
+***Notes: Make sure OCS2 is in the environment path.***
+
 
 ## Usage
 
